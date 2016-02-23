@@ -1,0 +1,63 @@
+# file: vkstruct.py
+# This file is going to generate the vks.py
+
+# Despite the xml is automatically parsed,
+# there is quite lot of work in understanding
+# all conventions the file contains.
+# It is best to tackle them one by one.
+
+# While I filled up things the program has to
+# export, I commented them out so I could get
+# clear view on what I need again.
+
+from bs4 import BeautifulSoup
+from bs4.element import Comment, NavigableString, Tag
+
+vk_xml = "/archive/Documents/Vulkan-Docs/src/spec/vk.xml"
+
+def translate():
+    with open(vk_xml) as fd:
+        soup = BeautifulSoup(fd.read(), 'xml')
+    registry = soup.registry
+
+    for tag in registry:
+        if tag.name == "enums":
+            if tag.get("name") == "API Constants":
+                continue
+            if tag.get("type") == "enum":
+                continue
+            if tag.get("type") == "bitmask":
+                continue
+            assert False, tag
+
+    for tag in registry.types:
+        if tag.name == "type":
+            category = tag.get("category")
+            if category == "include":
+                continue
+            if category == "define":
+                continue
+            if category == "basetype":
+                continue
+            if category == "bitmask":
+                continue
+            if category == "handle":
+                continue
+            if category == "enum":
+                continue
+            if category == "funcpointer":
+                continue
+            if category == "struct":
+                continue
+            if category == "union":
+                continue
+            if "requires" in tag.attrs:
+                continue
+            assert False, tag
+
+    for tag in registry.commands:
+        if tag.name == "command":
+            continue
+
+if __name__=="__main__":
+    translate()

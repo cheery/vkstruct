@@ -1,0 +1,67 @@
+# file: example.py
+# I'm usually not a fan of test
+# driven design. But now the
+# outcome and goals are very
+# explicit and allows it.
+import vks
+
+# Lets start with the simple one
+vks.InstanceCreateInfo(dict(
+    enabledExtensionNames = ["VK_KHR_surface", "VK_KHR_xcb_surface"],
+))
+
+# file: vks.py
+# Now it looks like we start to have
+# it in reducible form. We may attempt to
+# generate this file from the specification.
+import vkbuilder
+
+InstanceCreateInfo = vkbuilder.ExtensibleStructure(
+    "+InstanceCreateInfo",
+    "STRUCTURE_TYPE_INSTANCE_CREATE_INFO",
+    enabledExtensionNames = vkbuilder.Array("+char_pp",
+        "enabledExtensionCount",
+        "pEnabledExtensionNames")
+)
+
+# file: vkbuilder.py
+# The builder takes care of the actual logic
+# behind the bindings.
+class ExtensibleStructure(object):
+    def __init__(self, struct, sType, **model):
+        self.struct = struct
+        self.sType = sType
+        self.model = model
+
+    def __call__(self, struct):
+        pool = {}
+        print self.struct
+        print "memset({0}, 0, sizeof({0}))".format(self.struct)
+        print "{}.sType = {}".format(self.struct, self.sType)
+        print "{}.pNext = None".format(self.struct)
+        for key, item in struct.iteritems():
+            self.model[key].fill(pool, self.struct, item)
+        return pool
+
+class Array(object):
+    def __init__(self, struct, counter, pointer):
+        self.struct = struct
+        self.counter = counter
+        self.pointer = pointer
+
+    def fill(self, pool, base, item):
+        print "{}.{} = {}".format(base, self.counter, len(item))
+        print "{}.{} = {}[]".format(base, self.pointer, self.struct)
+        for i, cell in enumerate(item):
+            print "{}[{}] = {!r}".format(self.struct, i, cell)
+
+# output: python example.py
+# The output clearly does what we desire.
++InstanceCreateInfo
+memset(+InstanceCreateInfo, 0, sizeof(+InstanceCreateInfo))
++InstanceCreateInfo.sType = STRUCTURE_TYPE_INSTANCE_CREATE_INFO
++InstanceCreateInfo.pNext = None
++InstanceCreateInfo.enabledExtensionCount = 2
++InstanceCreateInfo.pEnabledExtensionNames = +char_pp[]
++char_pp[0] = 'VK_KHR_surface'
++char_pp[1] = 'VK_KHR_xcb_surface'

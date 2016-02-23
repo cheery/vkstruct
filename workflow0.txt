@@ -1,0 +1,57 @@
+# I thought someone might like
+# to see one possible workflow
+# for a project like this. So I 
+# provide intermediate steps.
+
+# file: example.py
+# I'm usually not a fan of test
+# driven design. But now the
+# outcome and goals are very
+# explicit and allows it.
+import vks
+
+# Lets start with the simple one
+vks.InstanceCreateInfo(dict(
+    enabledExtensionNames = ["VK_KHR_surface", "VK_KHR_xcb_surface"],
+))
+
+# file: vks.py
+# Ultimately the goal is to have
+# everything generated from vk.xml
+# But before you can generate
+# things it's better you know the
+# format you need things in.
+
+# Too early abstraction is evil.
+
+# Also we want a theory about how
+# this kind of library would work.
+def InstanceCreateInfo(struct):
+    pool = {}
+    obj = "+InstanceCreateInfo"
+    print obj
+    for key, item in struct.iteritems():
+        act = table[key]
+        act(obj, item)
+    return pool
+
+def enabledExtensionNames(base, item):
+    print "{}.enabledExtensionCount = {}".format(base, len(item))
+    print "{}.pEnabledExtensionNames = +char_pp".format(base)
+    for i, name in enumerate(item):
+        print "+char_pp[{}] = {!r}".format(i, name)
+
+table = {}
+table["enabledExtensionNames"] = enabledExtensionNames
+
+# output: python example.py
+# Here we can see that the program
+# is generating the pool contents
+# we need. So I have obtained a
+# theory about the function of the
+# tool I'm designing.
++InstanceCreateInfo
++InstanceCreateInfo.enabledExtensionCount = 2
++InstanceCreateInfo.pEnabledExtensionNames = +char_pp
++char_pp[0] = 'VK_KHR_surface'
++char_pp[1] = 'VK_KHR_xcb_surface'
