@@ -1,0 +1,4 @@
+# file: vkstruct_json.py
+
+My language parses up bindings from a json -file. So I needed a script to
+generate them.

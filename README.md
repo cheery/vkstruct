@@ -55,6 +55,6 @@ Here is an another example of what can be done with the results of this project:
 
 ## Usage
 
-To generate bindings with vkstruct, you need my other project chartparser. You can obtain it in http://github.com/cheery/chartparser
+To generate bindings with vkstruct, you need my other project chartparser. You can obtain it in http://github.com/cheery/chartparser And you need beautifulsoup4 to parse the `.xml`.
 
 The generated python bindings work as promised, but they are not polished. I made them to prototype bindings for http://leverlanguage.com/
