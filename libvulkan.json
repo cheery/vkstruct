@@ -5489,7 +5489,6 @@
                 "CLAMP_TO_BORDER": 3, 
                 "CLAMP_TO_EDGE": 2, 
                 "MIRRORED_REPEAT": 1, 
-                "MIRROR_CLAMP_TO_EDGE": 4, 
                 "REPEAT": 0
             }, 
             "ctype": "i32", 
@@ -5631,13 +5630,10 @@
         }, 
         "ShaderModuleCreateFlags": "i32", 
         "ShaderModuleCreateInfo": {
-            "aliases": {}, 
-            "autoarrays": {
-                "code": [
-                    "codeSize/4", 
-                    "pCode"
-                ]
+            "aliases": {
+                "code": "pCode"
             }, 
+            "autoarrays": {}, 
             "defaults": {
                 "sType": "SHADER_MODULE_CREATE_INFO"
             }, 
