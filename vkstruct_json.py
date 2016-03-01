@@ -205,7 +205,7 @@ basetypes = dict(
     float = "float",
     char = "char",
     size_t = "size_t",
-    void = "None",
+    void = "void",
     ANativeWindow = "void*",
     Display = "void*",
     MirConnection = "void*",
@@ -216,7 +216,7 @@ basetypes = dict(
     HWND = "void*",
     Window = "void*",
     xcb_connection_t = "void",
-    xcb_window_t = "void",
+    xcb_window_t = "void*",
     VisualID = "void*",
     xcb_visualid_t = "void*",
 )

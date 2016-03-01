@@ -57,4 +57,6 @@ Here is an another example of what can be done with the results of this project:
 
 To generate bindings with vkstruct, you need my other project chartparser. You can obtain it in http://github.com/cheery/chartparser And you need beautifulsoup4 to parse the `.xml`.
 
-The generated python bindings work as promised, but they are not polished. I made them to prototype bindings for http://leverlanguage.com/
+The generated python bindings work as promised, but they are not polished. For serious use they may need lot of work to satisfy every potential case you can come up with. I made them to prototype bindings for http://leverlanguage.com/
+
+The generated json -formatted headers work perfectly in lever programming language. But the Lever is itself varying in quality when it comes to satisfying other peoples needs.
