@@ -72,6 +72,8 @@ def translate():
             if category == "union":
                 translate_union(types, constants, tag)
                 continue
+            if tag.get("name") == "int":
+                continue
             if "requires" in tag.attrs:
                 continue
             assert False, tag
@@ -93,6 +95,7 @@ def translate_api_constants(constants):
             value = re.subn(r"(\d*)\.(\d*)f", r"\1.\2", value)[0]
             # This may not be correct thing to do.. or then it is?
             value = re.subn(r"\(~0UL*\)", "-1", value)[0]
+            value = re.subn(r"\(~0U-1\)", "-2", value)[0]
             if "." in value:
                 yield name, float(value)
             else:
@@ -205,6 +208,7 @@ basetypes = dict(
     float = "float",
     char = "char",
     size_t = "size_t",
+    int = "int",
     void = "void",
     ANativeWindow = "void*",
     Display = "void*",
@@ -213,12 +217,17 @@ basetypes = dict(
     struct_wl_display = "void",
     struct_wl_surface = "void",
     HINSTANCE = "void*",
+    HANDLE = "void*",
     HWND = "void*",
+    DWORD = "u32",
+    LPCWSTR = "void*",
     Window = "void*",
+    SECURITY_ATTRIBUTES = "void",
     xcb_connection_t = "void",
     xcb_window_t = "void*",
     VisualID = "void*",
     xcb_visualid_t = "void*",
+    RROutput = "void",
 )
 
 def writeout_type(constantmap, node):
