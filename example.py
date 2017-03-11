@@ -11,7 +11,7 @@ ci = vk.InstanceCreateInfo(dict(
         engineVersion = 1,
         apiVersion = (1 << 22 | 0 << 12 | 0)
     ),
-    enabledLayerNames = ["VK_LAYER_LUNARG_api_dump"],
+    #enabledLayerNames = ["VK_LAYER_LUNARG_api_dump"],
     enabledExtensionNames = ["VK_KHR_surface", "VK_KHR_xcb_surface"],
 ))
 instance = vk.Instance()

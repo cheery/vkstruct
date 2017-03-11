@@ -1,0 +1,4 @@
+I had to manually modifiy the vk.spec file to remove the following line
+<type name="int"/>
+by replacing it with 
+<!-- type name="int"/ -->
