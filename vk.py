@@ -9,6 +9,7 @@ DeviceSize = ctypes.c_uint64
 lib = vkbuilder.load_vulkan()
 MAX_PHYSICAL_DEVICE_NAME_SIZE = 256
 UUID_SIZE = 16
+LUID_SIZE_KHX = 8
 MAX_EXTENSION_NAME_SIZE = 256
 MAX_DESCRIPTION_SIZE = 256
 MAX_MEMORY_TYPES = 32
@@ -21,7 +22,9 @@ ATTACHMENT_UNUSED = -1
 TRUE = 1
 FALSE = 0
 QUEUE_FAMILY_IGNORED = -1
+QUEUE_FAMILY_EXTERNAL_KHX = (-1-1)
 SUBPASS_EXTERNAL = -1
+MAX_DEVICE_GROUP_SIZE_KHX = 32
 
 ImageLayout = vkbuilder.Enumeration(u'ImageLayout', {
     u'UNDEFINED'                                      : 0,
@@ -141,7 +144,6 @@ SamplerAddressMode = vkbuilder.Enumeration(u'SamplerAddressMode', {
     u'MIRRORED_REPEAT'                                : 1,
     u'CLAMP_TO_EDGE'                                  : 2,
     u'CLAMP_TO_BORDER'                                : 3,
-    u'MIRROR_CLAMP_TO_EDGE'                           : 4,
 })
 CompareOp = vkbuilder.Enumeration(u'CompareOp', {
     u'NEVER'                                          : 0,
@@ -162,7 +164,7 @@ CullModeFlags = vkbuilder.Bitmask(u'CullModeFlags', {
     u'NONE'                                           : 0,
     u'FRONT_BIT'                                      : 1 << 0,
     u'BACK_BIT'                                       : 1 << 1,
-    u'FRONT_AND_BACK'                                 : 0x3,
+    u'FRONT_AND_BACK'                                 : 0x00000003,
 })
 FrontFace = vkbuilder.Enumeration(u'FrontFace', {
     u'COUNTER_CLOCKWISE'                              : 0,
@@ -505,6 +507,7 @@ Result = vkbuilder.Enumeration(u'Result', {
     u'ERROR_INCOMPATIBLE_DRIVER'                      : -9,
     u'ERROR_TOO_MANY_OBJECTS'                         : -10,
     u'ERROR_FORMAT_NOT_SUPPORTED'                     : -11,
+    u'ERROR_FRAGMENTED_POOL'                          : -12,
 })
 DynamicState = vkbuilder.Enumeration(u'DynamicState', {
     u'VIEWPORT'                                       : 0,
@@ -516,6 +519,10 @@ DynamicState = vkbuilder.Enumeration(u'DynamicState', {
     u'STENCIL_COMPARE_MASK'                           : 6,
     u'STENCIL_WRITE_MASK'                             : 7,
     u'STENCIL_REFERENCE'                              : 8,
+})
+DescriptorUpdateTemplateTypeKHR = vkbuilder.Enumeration(u'DescriptorUpdateTemplateTypeKHR', {
+    u'DESCRIPTOR_SET_KHR'                             : 0,
+    u'PUSH_DESCRIPTORS_KHR'                           : 1,
 })
 QueueFlags = vkbuilder.Bitmask(u'QueueFlags', {
     u'GRAPHICS_BIT'                                   : 1 << 0,
@@ -575,7 +582,7 @@ ShaderStageFlags = vkbuilder.Bitmask(u'ShaderStageFlags', {
     u'GEOMETRY_BIT'                                   : 1 << 3,
     u'FRAGMENT_BIT'                                   : 1 << 4,
     u'COMPUTE_BIT'                                    : 1 << 5,
-    u'ALL_GRAPHICS'                                   : 0x1F,
+    u'ALL_GRAPHICS'                                   : 0x0000001F,
     u'ALL'                                            : 0x7FFFFFFF,
 })
 ImageUsageFlags = vkbuilder.Bitmask(u'ImageUsageFlags', {
@@ -709,7 +716,7 @@ AttachmentDescriptionFlags = vkbuilder.Bitmask(u'AttachmentDescriptionFlags', {
 StencilFaceFlags = vkbuilder.Bitmask(u'StencilFaceFlags', {
     u'FRONT_BIT'                                      : 1 << 0,
     u'BACK_BIT'                                       : 1 << 1,
-    u'FRONT_AND_BACK'                                 : 0x3,
+    u'FRONT_AND_BACK'                                 : 0x00000003,
 })
 DescriptorPoolCreateFlags = vkbuilder.Bitmask(u'DescriptorPoolCreateFlags', {
     u'FREE_DESCRIPTOR_SET_BIT'                        : 1 << 0,
@@ -724,7 +731,7 @@ PresentModeKHR = vkbuilder.Enumeration(u'PresentModeKHR', {
     u'FIFO_RELAXED_KHR'                               : 3,
 })
 ColorSpaceKHR = vkbuilder.Enumeration(u'ColorSpaceKHR', {
-    u'COLORSPACE_SRGB_NONLINEAR_KHR'                  : 0,
+    u'SRGB_NONLINEAR_KHR'                             : 0,
 })
 DisplayPlaneAlphaFlagsKHR = vkbuilder.Bitmask(u'DisplayPlaneAlphaFlagsKHR', {
     u'OPAQUE_BIT_KHR'                                 : 1 << 0,
@@ -786,10 +793,133 @@ DebugReportObjectTypeEXT = vkbuilder.Enumeration(u'DebugReportObjectTypeEXT', {
     u'SURFACE_KHR_EXT'                                : 26,
     u'SWAPCHAIN_KHR_EXT'                              : 27,
     u'DEBUG_REPORT_EXT'                               : 28,
+    u'DISPLAY_KHR_EXT'                                : 29,
+    u'DISPLAY_MODE_KHR_EXT'                           : 30,
+    u'OBJECT_TABLE_NVX_EXT'                           : 31,
+    u'INDIRECT_COMMANDS_LAYOUT_NVX_EXT'               : 32,
 })
 DebugReportErrorEXT = vkbuilder.Enumeration(u'DebugReportErrorEXT', {
     u'NONE_EXT'                                       : 0,
     u'CALLBACK_REF_EXT'                               : 1,
+})
+RasterizationOrderAMD = vkbuilder.Enumeration(u'RasterizationOrderAMD', {
+    u'STRICT_AMD'                                     : 0,
+    u'RELAXED_AMD'                                    : 1,
+})
+ExternalMemoryHandleTypeFlagsNV = vkbuilder.Bitmask(u'ExternalMemoryHandleTypeFlagsNV', {
+    u'OPAQUE_WIN32_BIT_NV'                            : 1 << 0,
+    u'OPAQUE_WIN32_KMT_BIT_NV'                        : 1 << 1,
+    u'D3D11_IMAGE_BIT_NV'                             : 1 << 2,
+    u'D3D11_IMAGE_KMT_BIT_NV'                         : 1 << 3,
+})
+ExternalMemoryFeatureFlagsNV = vkbuilder.Bitmask(u'ExternalMemoryFeatureFlagsNV', {
+    u'DEDICATED_ONLY_BIT_NV'                          : 1 << 0,
+    u'EXPORTABLE_BIT_NV'                              : 1 << 1,
+    u'IMPORTABLE_BIT_NV'                              : 1 << 2,
+})
+ValidationCheckEXT = vkbuilder.Enumeration(u'ValidationCheckEXT', {
+    u'ALL_EXT'                                        : 0,
+})
+IndirectCommandsLayoutUsageFlagsNVX = vkbuilder.Bitmask(u'IndirectCommandsLayoutUsageFlagsNVX', {
+    u'UNORDERED_SEQUENCES_BIT_NVX'                    : 1 << 0,
+    u'SPARSE_SEQUENCES_BIT_NVX'                       : 1 << 1,
+    u'EMPTY_EXECUTIONS_BIT_NVX'                       : 1 << 2,
+    u'INDEXED_SEQUENCES_BIT_NVX'                      : 1 << 3,
+})
+ObjectEntryUsageFlagsNVX = vkbuilder.Bitmask(u'ObjectEntryUsageFlagsNVX', {
+    u'GRAPHICS_BIT_NVX'                               : 1 << 0,
+    u'COMPUTE_BIT_NVX'                                : 1 << 1,
+})
+IndirectCommandsTokenTypeNVX = vkbuilder.Enumeration(u'IndirectCommandsTokenTypeNVX', {
+    u'PIPELINE_NVX'                                   : 0,
+    u'DESCRIPTOR_SET_NVX'                             : 1,
+    u'INDEX_BUFFER_NVX'                               : 2,
+    u'VERTEX_BUFFER_NVX'                              : 3,
+    u'PUSH_CONSTANT_NVX'                              : 4,
+    u'DRAW_INDEXED_NVX'                               : 5,
+    u'DRAW_NVX'                                       : 6,
+    u'DISPATCH_NVX'                                   : 7,
+})
+ObjectEntryTypeNVX = vkbuilder.Enumeration(u'ObjectEntryTypeNVX', {
+    u'DESCRIPTOR_SET_NVX'                             : 0,
+    u'PIPELINE_NVX'                                   : 1,
+    u'INDEX_BUFFER_NVX'                               : 2,
+    u'VERTEX_BUFFER_NVX'                              : 3,
+    u'PUSH_CONSTANT_NVX'                              : 4,
+})
+DescriptorSetLayoutCreateFlags = vkbuilder.Bitmask(u'DescriptorSetLayoutCreateFlags', {
+})
+ExternalMemoryHandleTypeFlagsKHX = vkbuilder.Bitmask(u'ExternalMemoryHandleTypeFlagsKHX', {
+    u'OPAQUE_FD_BIT_KHX'                              : 1 << 0,
+    u'OPAQUE_WIN32_BIT_KHX'                           : 1 << 1,
+    u'OPAQUE_WIN32_KMT_BIT_KHX'                       : 1 << 2,
+    u'D3D11_TEXTURE_BIT_KHX'                          : 1 << 3,
+    u'D3D11_TEXTURE_KMT_BIT_KHX'                      : 1 << 4,
+    u'D3D12_HEAP_BIT_KHX'                             : 1 << 5,
+    u'D3D12_RESOURCE_BIT_KHX'                         : 1 << 6,
+})
+ExternalMemoryFeatureFlagsKHX = vkbuilder.Bitmask(u'ExternalMemoryFeatureFlagsKHX', {
+    u'DEDICATED_ONLY_BIT_KHX'                         : 1 << 0,
+    u'EXPORTABLE_BIT_KHX'                             : 1 << 1,
+    u'IMPORTABLE_BIT_KHX'                             : 1 << 2,
+})
+ExternalSemaphoreHandleTypeFlagsKHX = vkbuilder.Bitmask(u'ExternalSemaphoreHandleTypeFlagsKHX', {
+    u'OPAQUE_FD_BIT_KHX'                              : 1 << 0,
+    u'OPAQUE_WIN32_BIT_KHX'                           : 1 << 1,
+    u'OPAQUE_WIN32_KMT_BIT_KHX'                       : 1 << 2,
+    u'D3D12_FENCE_BIT_KHX'                            : 1 << 3,
+    u'FENCE_FD_BIT_KHX'                               : 1 << 4,
+})
+ExternalSemaphoreFeatureFlagsKHX = vkbuilder.Bitmask(u'ExternalSemaphoreFeatureFlagsKHX', {
+    u'EXPORTABLE_BIT_KHX'                             : 1 << 0,
+    u'IMPORTABLE_BIT_KHX'                             : 1 << 1,
+})
+SurfaceCounterFlagsEXT = vkbuilder.Bitmask(u'SurfaceCounterFlagsEXT', {
+    u'VBLANK_EXT'                                     : 1 << 0,
+})
+DisplayPowerStateEXT = vkbuilder.Enumeration(u'DisplayPowerStateEXT', {
+    u'OFF_EXT'                                        : 0,
+    u'SUSPEND_EXT'                                    : 1,
+    u'ON_EXT'                                         : 2,
+})
+DeviceEventTypeEXT = vkbuilder.Enumeration(u'DeviceEventTypeEXT', {
+    u'DISPLAY_HOTPLUG_EXT'                            : 0,
+})
+DisplayEventTypeEXT = vkbuilder.Enumeration(u'DisplayEventTypeEXT', {
+    u'FIRST_PIXEL_OUT_EXT'                            : 0,
+})
+PeerMemoryFeatureFlagsKHX = vkbuilder.Bitmask(u'PeerMemoryFeatureFlagsKHX', {
+    u'COPY_SRC_BIT_KHX'                               : 1 << 0,
+    u'COPY_DST_BIT_KHX'                               : 1 << 1,
+    u'GENERIC_SRC_BIT_KHX'                            : 1 << 2,
+    u'GENERIC_DST_BIT_KHX'                            : 1 << 3,
+})
+MemoryAllocateFlagsKHX = vkbuilder.Bitmask(u'MemoryAllocateFlagsKHX', {
+    u'DEVICE_MASK_BIT_KHX'                            : 1 << 0,
+})
+DeviceGroupPresentModeFlagsKHX = vkbuilder.Bitmask(u'DeviceGroupPresentModeFlagsKHX', {
+    u'LOCAL_BIT_KHX'                                  : 1 << 0,
+    u'REMOTE_BIT_KHX'                                 : 1 << 1,
+    u'SUM_BIT_KHX'                                    : 1 << 2,
+    u'LOCAL_MULTI_DEVICE_BIT_KHX'                     : 1 << 3,
+})
+SwapchainCreateFlagsKHR = vkbuilder.Bitmask(u'SwapchainCreateFlagsKHR', {
+})
+ViewportCoordinateSwizzleNV = vkbuilder.Enumeration(u'ViewportCoordinateSwizzleNV', {
+    u'POSITIVE_X_NV'                                  : 0,
+    u'NEGATIVE_X_NV'                                  : 1,
+    u'POSITIVE_Y_NV'                                  : 2,
+    u'NEGATIVE_Y_NV'                                  : 3,
+    u'POSITIVE_Z_NV'                                  : 4,
+    u'NEGATIVE_Z_NV'                                  : 5,
+    u'POSITIVE_W_NV'                                  : 6,
+    u'NEGATIVE_W_NV'                                  : 7,
+})
+DiscardRectangleModeEXT = vkbuilder.Enumeration(u'DiscardRectangleModeEXT', {
+    u'INCLUSIVE_EXT'                                  : 0,
+    u'EXCLUSIVE_EXT'                                  : 1,
+})
+SubpassDescriptionFlags = vkbuilder.Bitmask(u'SubpassDescriptionFlags', {
 })
 class VulkanError(Exception):
     def __init__(self, result):
@@ -814,7 +944,6 @@ PipelineTessellationStateCreateFlags = ctypes.c_uint32
 PipelineInputAssemblyStateCreateFlags = ctypes.c_uint32
 PipelineVertexInputStateCreateFlags = ctypes.c_uint32
 PipelineShaderStageCreateFlags = ctypes.c_uint32
-DescriptorSetLayoutCreateFlags = ctypes.c_uint32
 BufferViewCreateFlags = ctypes.c_uint32
 InstanceCreateFlags = ctypes.c_uint32
 DeviceCreateFlags = ctypes.c_uint32
@@ -824,17 +953,22 @@ SemaphoreCreateFlags = ctypes.c_uint32
 ShaderModuleCreateFlags = ctypes.c_uint32
 EventCreateFlags = ctypes.c_uint32
 MemoryMapFlags = ctypes.c_uint32
-SubpassDescriptionFlags = ctypes.c_uint32
 DescriptorPoolResetFlags = ctypes.c_uint32
-SwapchainCreateFlagsKHR = ctypes.c_uint32
+DescriptorUpdateTemplateCreateFlagsKHR = ctypes.c_uint32
 DisplayModeCreateFlagsKHR = ctypes.c_uint32
 DisplaySurfaceCreateFlagsKHR = ctypes.c_uint32
 AndroidSurfaceCreateFlagsKHR = ctypes.c_uint32
 MirSurfaceCreateFlagsKHR = ctypes.c_uint32
+ViSurfaceCreateFlagsNN = ctypes.c_uint32
 WaylandSurfaceCreateFlagsKHR = ctypes.c_uint32
 Win32SurfaceCreateFlagsKHR = ctypes.c_uint32
 XlibSurfaceCreateFlagsKHR = ctypes.c_uint32
 XcbSurfaceCreateFlagsKHR = ctypes.c_uint32
+IOSSurfaceCreateFlagsMVK = ctypes.c_uint32
+MacOSSurfaceCreateFlagsMVK = ctypes.c_uint32
+CommandPoolTrimFlagsKHR = ctypes.c_uint32
+PipelineViewportSwizzleStateCreateFlagsNV = ctypes.c_uint32
+PipelineDiscardRectangleStateCreateFlagsEXT = ctypes.c_uint32
 Instance                 = vkbuilder.Handle(u'Instance')
 PhysicalDevice           = vkbuilder.Handle(u'PhysicalDevice')
 Device                   = vkbuilder.Handle(u'Device')
@@ -860,6 +994,9 @@ QueryPool                = vkbuilder.Handle(u'QueryPool')
 Framebuffer              = vkbuilder.Handle(u'Framebuffer')
 RenderPass               = vkbuilder.Handle(u'RenderPass')
 PipelineCache            = vkbuilder.Handle(u'PipelineCache')
+ObjectTableNVX           = vkbuilder.Handle(u'ObjectTableNVX')
+IndirectCommandsLayoutNVX = vkbuilder.Handle(u'IndirectCommandsLayoutNVX')
+DescriptorUpdateTemplateKHR = vkbuilder.Handle(u'DescriptorUpdateTemplateKHR')
 DisplayKHR               = vkbuilder.Handle(u'DisplayKHR')
 DisplayModeKHR           = vkbuilder.Handle(u'DisplayModeKHR')
 SurfaceKHR               = vkbuilder.Handle(u'SurfaceKHR')
@@ -881,7 +1018,6 @@ PipelineTessellationStateCreateFlags = ctypes.c_uint32
 PipelineInputAssemblyStateCreateFlags = ctypes.c_uint32
 PipelineVertexInputStateCreateFlags = ctypes.c_uint32
 PipelineShaderStageCreateFlags = ctypes.c_uint32
-DescriptorSetLayoutCreateFlags = ctypes.c_uint32
 BufferViewCreateFlags = ctypes.c_uint32
 InstanceCreateFlags = ctypes.c_uint32
 DeviceQueueCreateFlags = ctypes.c_uint32
@@ -1046,6 +1182,7 @@ DisplayPresentInfoKHR = vkbuilder.Structure(u'DisplayPresentInfoKHR')
 SurfaceCapabilitiesKHR = vkbuilder.Structure(u'SurfaceCapabilitiesKHR')
 AndroidSurfaceCreateInfoKHR = vkbuilder.Structure(u'AndroidSurfaceCreateInfoKHR')
 MirSurfaceCreateInfoKHR = vkbuilder.Structure(u'MirSurfaceCreateInfoKHR')
+ViSurfaceCreateInfoNN = vkbuilder.Structure(u'ViSurfaceCreateInfoNN')
 WaylandSurfaceCreateInfoKHR = vkbuilder.Structure(u'WaylandSurfaceCreateInfoKHR')
 Win32SurfaceCreateInfoKHR = vkbuilder.Structure(u'Win32SurfaceCreateInfoKHR')
 XlibSurfaceCreateInfoKHR = vkbuilder.Structure(u'XlibSurfaceCreateInfoKHR')
@@ -1054,6 +1191,106 @@ SurfaceFormatKHR = vkbuilder.Structure(u'SurfaceFormatKHR')
 SwapchainCreateInfoKHR = vkbuilder.Structure(u'SwapchainCreateInfoKHR')
 PresentInfoKHR = vkbuilder.Structure(u'PresentInfoKHR')
 DebugReportCallbackCreateInfoEXT = vkbuilder.Structure(u'DebugReportCallbackCreateInfoEXT')
+ValidationFlagsEXT = vkbuilder.Structure(u'ValidationFlagsEXT')
+PipelineRasterizationStateRasterizationOrderAMD = vkbuilder.Structure(u'PipelineRasterizationStateRasterizationOrderAMD')
+DebugMarkerObjectNameInfoEXT = vkbuilder.Structure(u'DebugMarkerObjectNameInfoEXT')
+DebugMarkerObjectTagInfoEXT = vkbuilder.Structure(u'DebugMarkerObjectTagInfoEXT')
+DebugMarkerMarkerInfoEXT = vkbuilder.Structure(u'DebugMarkerMarkerInfoEXT')
+DedicatedAllocationImageCreateInfoNV = vkbuilder.Structure(u'DedicatedAllocationImageCreateInfoNV')
+DedicatedAllocationBufferCreateInfoNV = vkbuilder.Structure(u'DedicatedAllocationBufferCreateInfoNV')
+DedicatedAllocationMemoryAllocateInfoNV = vkbuilder.Structure(u'DedicatedAllocationMemoryAllocateInfoNV')
+ExternalImageFormatPropertiesNV = vkbuilder.Structure(u'ExternalImageFormatPropertiesNV')
+ExternalMemoryImageCreateInfoNV = vkbuilder.Structure(u'ExternalMemoryImageCreateInfoNV')
+ExportMemoryAllocateInfoNV = vkbuilder.Structure(u'ExportMemoryAllocateInfoNV')
+ImportMemoryWin32HandleInfoNV = vkbuilder.Structure(u'ImportMemoryWin32HandleInfoNV')
+ExportMemoryWin32HandleInfoNV = vkbuilder.Structure(u'ExportMemoryWin32HandleInfoNV')
+Win32KeyedMutexAcquireReleaseInfoNV = vkbuilder.Structure(u'Win32KeyedMutexAcquireReleaseInfoNV')
+DeviceGeneratedCommandsFeaturesNVX = vkbuilder.Structure(u'DeviceGeneratedCommandsFeaturesNVX')
+DeviceGeneratedCommandsLimitsNVX = vkbuilder.Structure(u'DeviceGeneratedCommandsLimitsNVX')
+IndirectCommandsTokenNVX = vkbuilder.Structure(u'IndirectCommandsTokenNVX')
+IndirectCommandsLayoutTokenNVX = vkbuilder.Structure(u'IndirectCommandsLayoutTokenNVX')
+IndirectCommandsLayoutCreateInfoNVX = vkbuilder.Structure(u'IndirectCommandsLayoutCreateInfoNVX')
+CmdProcessCommandsInfoNVX = vkbuilder.Structure(u'CmdProcessCommandsInfoNVX')
+CmdReserveSpaceForCommandsInfoNVX = vkbuilder.Structure(u'CmdReserveSpaceForCommandsInfoNVX')
+ObjectTableCreateInfoNVX = vkbuilder.Structure(u'ObjectTableCreateInfoNVX')
+ObjectTableEntryNVX = vkbuilder.Structure(u'ObjectTableEntryNVX')
+ObjectTablePipelineEntryNVX = vkbuilder.Structure(u'ObjectTablePipelineEntryNVX')
+ObjectTableDescriptorSetEntryNVX = vkbuilder.Structure(u'ObjectTableDescriptorSetEntryNVX')
+ObjectTableVertexBufferEntryNVX = vkbuilder.Structure(u'ObjectTableVertexBufferEntryNVX')
+ObjectTableIndexBufferEntryNVX = vkbuilder.Structure(u'ObjectTableIndexBufferEntryNVX')
+ObjectTablePushConstantEntryNVX = vkbuilder.Structure(u'ObjectTablePushConstantEntryNVX')
+PhysicalDeviceFeatures2KHR = vkbuilder.Structure(u'PhysicalDeviceFeatures2KHR')
+PhysicalDeviceProperties2KHR = vkbuilder.Structure(u'PhysicalDeviceProperties2KHR')
+FormatProperties2KHR = vkbuilder.Structure(u'FormatProperties2KHR')
+ImageFormatProperties2KHR = vkbuilder.Structure(u'ImageFormatProperties2KHR')
+PhysicalDeviceImageFormatInfo2KHR = vkbuilder.Structure(u'PhysicalDeviceImageFormatInfo2KHR')
+QueueFamilyProperties2KHR = vkbuilder.Structure(u'QueueFamilyProperties2KHR')
+PhysicalDeviceMemoryProperties2KHR = vkbuilder.Structure(u'PhysicalDeviceMemoryProperties2KHR')
+SparseImageFormatProperties2KHR = vkbuilder.Structure(u'SparseImageFormatProperties2KHR')
+PhysicalDeviceSparseImageFormatInfo2KHR = vkbuilder.Structure(u'PhysicalDeviceSparseImageFormatInfo2KHR')
+PhysicalDevicePushDescriptorPropertiesKHR = vkbuilder.Structure(u'PhysicalDevicePushDescriptorPropertiesKHR')
+ExternalMemoryPropertiesKHX = vkbuilder.Structure(u'ExternalMemoryPropertiesKHX')
+PhysicalDeviceExternalImageFormatInfoKHX = vkbuilder.Structure(u'PhysicalDeviceExternalImageFormatInfoKHX')
+ExternalImageFormatPropertiesKHX = vkbuilder.Structure(u'ExternalImageFormatPropertiesKHX')
+PhysicalDeviceExternalBufferInfoKHX = vkbuilder.Structure(u'PhysicalDeviceExternalBufferInfoKHX')
+ExternalBufferPropertiesKHX = vkbuilder.Structure(u'ExternalBufferPropertiesKHX')
+PhysicalDeviceIDPropertiesKHX = vkbuilder.Structure(u'PhysicalDeviceIDPropertiesKHX')
+ExternalMemoryImageCreateInfoKHX = vkbuilder.Structure(u'ExternalMemoryImageCreateInfoKHX')
+ExternalMemoryBufferCreateInfoKHX = vkbuilder.Structure(u'ExternalMemoryBufferCreateInfoKHX')
+ExportMemoryAllocateInfoKHX = vkbuilder.Structure(u'ExportMemoryAllocateInfoKHX')
+ImportMemoryWin32HandleInfoKHX = vkbuilder.Structure(u'ImportMemoryWin32HandleInfoKHX')
+ExportMemoryWin32HandleInfoKHX = vkbuilder.Structure(u'ExportMemoryWin32HandleInfoKHX')
+MemoryWin32HandlePropertiesKHX = vkbuilder.Structure(u'MemoryWin32HandlePropertiesKHX')
+ImportMemoryFdInfoKHX = vkbuilder.Structure(u'ImportMemoryFdInfoKHX')
+MemoryFdPropertiesKHX = vkbuilder.Structure(u'MemoryFdPropertiesKHX')
+Win32KeyedMutexAcquireReleaseInfoKHX = vkbuilder.Structure(u'Win32KeyedMutexAcquireReleaseInfoKHX')
+PhysicalDeviceExternalSemaphoreInfoKHX = vkbuilder.Structure(u'PhysicalDeviceExternalSemaphoreInfoKHX')
+ExternalSemaphorePropertiesKHX = vkbuilder.Structure(u'ExternalSemaphorePropertiesKHX')
+ExportSemaphoreCreateInfoKHX = vkbuilder.Structure(u'ExportSemaphoreCreateInfoKHX')
+ImportSemaphoreWin32HandleInfoKHX = vkbuilder.Structure(u'ImportSemaphoreWin32HandleInfoKHX')
+ExportSemaphoreWin32HandleInfoKHX = vkbuilder.Structure(u'ExportSemaphoreWin32HandleInfoKHX')
+D3D12FenceSubmitInfoKHX = vkbuilder.Structure(u'D3D12FenceSubmitInfoKHX')
+ImportSemaphoreFdInfoKHX = vkbuilder.Structure(u'ImportSemaphoreFdInfoKHX')
+PhysicalDeviceMultiviewFeaturesKHX = vkbuilder.Structure(u'PhysicalDeviceMultiviewFeaturesKHX')
+PhysicalDeviceMultiviewPropertiesKHX = vkbuilder.Structure(u'PhysicalDeviceMultiviewPropertiesKHX')
+RenderPassMultiviewCreateInfoKHX = vkbuilder.Structure(u'RenderPassMultiviewCreateInfoKHX')
+SurfaceCapabilities2EXT = vkbuilder.Structure(u'SurfaceCapabilities2EXT')
+DisplayPowerInfoEXT = vkbuilder.Structure(u'DisplayPowerInfoEXT')
+DeviceEventInfoEXT = vkbuilder.Structure(u'DeviceEventInfoEXT')
+DisplayEventInfoEXT = vkbuilder.Structure(u'DisplayEventInfoEXT')
+SwapchainCounterCreateInfoEXT = vkbuilder.Structure(u'SwapchainCounterCreateInfoEXT')
+PhysicalDeviceGroupPropertiesKHX = vkbuilder.Structure(u'PhysicalDeviceGroupPropertiesKHX')
+MemoryAllocateFlagsInfoKHX = vkbuilder.Structure(u'MemoryAllocateFlagsInfoKHX')
+BindBufferMemoryInfoKHX = vkbuilder.Structure(u'BindBufferMemoryInfoKHX')
+BindImageMemoryInfoKHX = vkbuilder.Structure(u'BindImageMemoryInfoKHX')
+DeviceGroupRenderPassBeginInfoKHX = vkbuilder.Structure(u'DeviceGroupRenderPassBeginInfoKHX')
+DeviceGroupCommandBufferBeginInfoKHX = vkbuilder.Structure(u'DeviceGroupCommandBufferBeginInfoKHX')
+DeviceGroupSubmitInfoKHX = vkbuilder.Structure(u'DeviceGroupSubmitInfoKHX')
+DeviceGroupBindSparseInfoKHX = vkbuilder.Structure(u'DeviceGroupBindSparseInfoKHX')
+DeviceGroupPresentCapabilitiesKHX = vkbuilder.Structure(u'DeviceGroupPresentCapabilitiesKHX')
+ImageSwapchainCreateInfoKHX = vkbuilder.Structure(u'ImageSwapchainCreateInfoKHX')
+BindImageMemorySwapchainInfoKHX = vkbuilder.Structure(u'BindImageMemorySwapchainInfoKHX')
+AcquireNextImageInfoKHX = vkbuilder.Structure(u'AcquireNextImageInfoKHX')
+DeviceGroupPresentInfoKHX = vkbuilder.Structure(u'DeviceGroupPresentInfoKHX')
+DeviceGroupDeviceCreateInfoKHX = vkbuilder.Structure(u'DeviceGroupDeviceCreateInfoKHX')
+DeviceGroupSwapchainCreateInfoKHX = vkbuilder.Structure(u'DeviceGroupSwapchainCreateInfoKHX')
+DescriptorUpdateTemplateEntryKHR = vkbuilder.Structure(u'DescriptorUpdateTemplateEntryKHR')
+DescriptorUpdateTemplateCreateInfoKHR = vkbuilder.Structure(u'DescriptorUpdateTemplateCreateInfoKHR')
+XYColorEXT = vkbuilder.Structure(u'XYColorEXT')
+HdrMetadataEXT = vkbuilder.Structure(u'HdrMetadataEXT')
+RefreshCycleDurationGOOGLE = vkbuilder.Structure(u'RefreshCycleDurationGOOGLE')
+PastPresentationTimingGOOGLE = vkbuilder.Structure(u'PastPresentationTimingGOOGLE')
+PresentTimesInfoGOOGLE = vkbuilder.Structure(u'PresentTimesInfoGOOGLE')
+PresentTimeGOOGLE = vkbuilder.Structure(u'PresentTimeGOOGLE')
+IOSSurfaceCreateInfoMVK = vkbuilder.Structure(u'IOSSurfaceCreateInfoMVK')
+MacOSSurfaceCreateInfoMVK = vkbuilder.Structure(u'MacOSSurfaceCreateInfoMVK')
+ViewportWScalingNV = vkbuilder.Structure(u'ViewportWScalingNV')
+PipelineViewportWScalingStateCreateInfoNV = vkbuilder.Structure(u'PipelineViewportWScalingStateCreateInfoNV')
+ViewportSwizzleNV = vkbuilder.Structure(u'ViewportSwizzleNV')
+PipelineViewportSwizzleStateCreateInfoNV = vkbuilder.Structure(u'PipelineViewportSwizzleStateCreateInfoNV')
+PhysicalDeviceDiscardRectanglePropertiesEXT = vkbuilder.Structure(u'PhysicalDeviceDiscardRectanglePropertiesEXT')
+PipelineDiscardRectangleStateCreateInfoEXT = vkbuilder.Structure(u'PipelineDiscardRectangleStateCreateInfoEXT')
+PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX = vkbuilder.Structure(u'PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX')
 
 Offset2D.declare([
     (u'x', ctypes.c_int32),
@@ -1489,9 +1726,9 @@ ImageCopy.declare([
 ])
 ImageBlit.declare([
     (u'srcSubresource', ImageSubresourceLayers),
-    (u'srcOffsets[2]', Offset3D),
+    (u'srcOffsets', vkbuilder.Array(Offset3D, 2)),
     (u'dstSubresource', ImageSubresourceLayers),
-    (u'dstOffsets[2]', Offset3D),
+    (u'dstOffsets', vkbuilder.Array(Offset3D, 2)),
 ])
 BufferImageCopy.declare([
     (u'bufferOffset', DeviceSize),
@@ -1516,7 +1753,6 @@ ShaderModuleCreateInfo.declare([
     (u'pCode', vkbuilder.Pointer(ctypes.c_uint32)),
 ])
 ShaderModuleCreateInfo.declare_autoarrays([
-    (u'code', (u'codeSize/4', u'pCode')),
 ])
 ShaderModuleCreateInfo.sType = u'SHADER_MODULE_CREATE_INFO'
 DescriptorSetLayoutBinding.declare([
@@ -2302,6 +2538,13 @@ MirSurfaceCreateInfoKHR.declare([
     (u'mirSurface', vkbuilder.Pointer(ctypes.c_void_p)),
 ])
 MirSurfaceCreateInfoKHR.sType = u'MIR_SURFACE_CREATE_INFO_KHR'
+ViSurfaceCreateInfoNN.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'flags', ViSurfaceCreateFlagsNN),
+    (u'window', ctypes.c_void_p),
+])
+ViSurfaceCreateInfoNN.sType = u'VI_SURFACE_CREATE_INFO_NN'
 WaylandSurfaceCreateInfoKHR.declare([
     (u'sType', StructureType),
     (u'pNext', ctypes.c_void_p),
@@ -2331,7 +2574,7 @@ XcbSurfaceCreateInfoKHR.declare([
     (u'pNext', ctypes.c_void_p),
     (u'flags', XcbSurfaceCreateFlagsKHR),
     (u'connection', ctypes.c_void_p),
-    (u'window', None),
+    (u'window', ctypes.c_void_p),
 ])
 XcbSurfaceCreateInfoKHR.sType = u'XCB_SURFACE_CREATE_INFO_KHR'
 SurfaceFormatKHR.declare([
@@ -2390,6 +2633,840 @@ DebugReportCallbackCreateInfoEXT.declare_aliases([
     (u'userData', u'pUserData'),
 ])
 DebugReportCallbackCreateInfoEXT.sType = u'DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT'
+ValidationFlagsEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'disabledValidationCheckCount', ctypes.c_uint32),
+    (u'pDisabledValidationChecks', vkbuilder.Pointer(ValidationCheckEXT)),
+])
+ValidationFlagsEXT.declare_autoarrays([
+    (u'disabledValidationChecks', (u'disabledValidationCheckCount', u'pDisabledValidationChecks')),
+])
+ValidationFlagsEXT.sType = u'VALIDATION_FLAGS_EXT'
+PipelineRasterizationStateRasterizationOrderAMD.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'rasterizationOrder', RasterizationOrderAMD),
+])
+PipelineRasterizationStateRasterizationOrderAMD.sType = u'PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD'
+DebugMarkerObjectNameInfoEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'objectType', DebugReportObjectTypeEXT),
+    (u'object', ctypes.c_uint64),
+    (u'pObjectName', ctypes.c_char_p),
+])
+DebugMarkerObjectNameInfoEXT.declare_aliases([
+    (u'objectName', u'pObjectName'),
+])
+DebugMarkerObjectNameInfoEXT.sType = u'DEBUG_MARKER_OBJECT_NAME_INFO_EXT'
+DebugMarkerObjectTagInfoEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'objectType', DebugReportObjectTypeEXT),
+    (u'object', ctypes.c_uint64),
+    (u'tagName', ctypes.c_uint64),
+    (u'tagSize', ctypes.c_size_t),
+    (u'pTag', ctypes.c_void_p),
+])
+DebugMarkerObjectTagInfoEXT.declare_autoarrays([
+    (u'tag', (u'tagSize', u'pTag')),
+])
+DebugMarkerObjectTagInfoEXT.sType = u'DEBUG_MARKER_OBJECT_TAG_INFO_EXT'
+DebugMarkerMarkerInfoEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'pMarkerName', ctypes.c_char_p),
+    (u'color', vkbuilder.Array(ctypes.c_float, 4)),
+])
+DebugMarkerMarkerInfoEXT.declare_aliases([
+    (u'markerName', u'pMarkerName'),
+])
+DebugMarkerMarkerInfoEXT.sType = u'DEBUG_MARKER_MARKER_INFO_EXT'
+DedicatedAllocationImageCreateInfoNV.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'dedicatedAllocation', Bool32),
+])
+DedicatedAllocationImageCreateInfoNV.sType = u'DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV'
+DedicatedAllocationBufferCreateInfoNV.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'dedicatedAllocation', Bool32),
+])
+DedicatedAllocationBufferCreateInfoNV.sType = u'DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV'
+DedicatedAllocationMemoryAllocateInfoNV.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'image', Image),
+    (u'buffer', Buffer),
+])
+DedicatedAllocationMemoryAllocateInfoNV.sType = u'DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV'
+ExternalImageFormatPropertiesNV.declare([
+    (u'imageFormatProperties', ImageFormatProperties),
+    (u'externalMemoryFeatures', ExternalMemoryFeatureFlagsNV),
+    (u'exportFromImportedHandleTypes', ExternalMemoryHandleTypeFlagsNV),
+    (u'compatibleHandleTypes', ExternalMemoryHandleTypeFlagsNV),
+])
+ExternalMemoryImageCreateInfoNV.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleTypes', ExternalMemoryHandleTypeFlagsNV),
+])
+ExternalMemoryImageCreateInfoNV.sType = u'EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV'
+ExportMemoryAllocateInfoNV.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleTypes', ExternalMemoryHandleTypeFlagsNV),
+])
+ExportMemoryAllocateInfoNV.sType = u'EXPORT_MEMORY_ALLOCATE_INFO_NV'
+ImportMemoryWin32HandleInfoNV.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleType', ExternalMemoryHandleTypeFlagsNV),
+    (u'handle', ctypes.c_void_p),
+])
+ImportMemoryWin32HandleInfoNV.sType = u'IMPORT_MEMORY_WIN_32_HANDLE_INFO_NV'
+ExportMemoryWin32HandleInfoNV.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'pAttributes', vkbuilder.Pointer(ctypes.c_void_p)),
+    (u'dwAccess', ctypes.c_uint32),
+])
+ExportMemoryWin32HandleInfoNV.declare_aliases([
+    (u'attributes', u'pAttributes'),
+])
+ExportMemoryWin32HandleInfoNV.sType = u'EXPORT_MEMORY_WIN_32_HANDLE_INFO_NV'
+Win32KeyedMutexAcquireReleaseInfoNV.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'acquireCount', ctypes.c_uint32),
+    (u'pAcquireSyncs', vkbuilder.Pointer(DeviceMemory)),
+    (u'pAcquireKeys', vkbuilder.Pointer(ctypes.c_uint64)),
+    (u'pAcquireTimeoutMilliseconds', vkbuilder.Pointer(ctypes.c_uint32)),
+    (u'releaseCount', ctypes.c_uint32),
+    (u'pReleaseSyncs', vkbuilder.Pointer(DeviceMemory)),
+    (u'pReleaseKeys', vkbuilder.Pointer(ctypes.c_uint64)),
+])
+Win32KeyedMutexAcquireReleaseInfoNV.declare_autoarrays([
+    (u'acquireSyncs', (u'acquireCount', u'pAcquireSyncs')),
+    (u'acquireKeys', (u'acquireCount', u'pAcquireKeys')),
+    (u'acquireTimeoutMilliseconds', (u'acquireCount', u'pAcquireTimeoutMilliseconds')),
+    (u'releaseSyncs', (u'releaseCount', u'pReleaseSyncs')),
+    (u'releaseKeys', (u'releaseCount', u'pReleaseKeys')),
+])
+Win32KeyedMutexAcquireReleaseInfoNV.sType = u'WIN_32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV'
+DeviceGeneratedCommandsFeaturesNVX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'computeBindingPointSupport', Bool32),
+])
+DeviceGeneratedCommandsFeaturesNVX.sType = u'DEVICE_GENERATED_COMMANDS_FEATURES_NVX'
+DeviceGeneratedCommandsLimitsNVX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'maxIndirectCommandsLayoutTokenCount', ctypes.c_uint32),
+    (u'maxObjectEntryCounts', ctypes.c_uint32),
+    (u'minSequenceCountBufferOffsetAlignment', ctypes.c_uint32),
+    (u'minSequenceIndexBufferOffsetAlignment', ctypes.c_uint32),
+    (u'minCommandsTokenBufferOffsetAlignment', ctypes.c_uint32),
+])
+DeviceGeneratedCommandsLimitsNVX.sType = u'DEVICE_GENERATED_COMMANDS_LIMITS_NVX'
+IndirectCommandsTokenNVX.declare([
+    (u'tokenType', IndirectCommandsTokenTypeNVX),
+    (u'buffer', Buffer),
+    (u'offset', DeviceSize),
+])
+IndirectCommandsLayoutTokenNVX.declare([
+    (u'tokenType', IndirectCommandsTokenTypeNVX),
+    (u'bindingUnit', ctypes.c_uint32),
+    (u'dynamicCount', ctypes.c_uint32),
+    (u'divisor', ctypes.c_uint32),
+])
+IndirectCommandsLayoutCreateInfoNVX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'pipelineBindPoint', PipelineBindPoint),
+    (u'flags', IndirectCommandsLayoutUsageFlagsNVX),
+    (u'tokenCount', ctypes.c_uint32),
+    (u'pTokens', vkbuilder.Pointer(IndirectCommandsLayoutTokenNVX)),
+])
+IndirectCommandsLayoutCreateInfoNVX.declare_autoarrays([
+    (u'tokens', (u'tokenCount', u'pTokens')),
+])
+IndirectCommandsLayoutCreateInfoNVX.sType = u'INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX'
+CmdProcessCommandsInfoNVX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'objectTable', ObjectTableNVX),
+    (u'indirectCommandsLayout', IndirectCommandsLayoutNVX),
+    (u'indirectCommandsTokenCount', ctypes.c_uint32),
+    (u'pIndirectCommandsTokens', vkbuilder.Pointer(IndirectCommandsTokenNVX)),
+    (u'maxSequencesCount', ctypes.c_uint32),
+    (u'targetCommandBuffer', CommandBuffer),
+    (u'sequencesCountBuffer', Buffer),
+    (u'sequencesCountOffset', DeviceSize),
+    (u'sequencesIndexBuffer', Buffer),
+    (u'sequencesIndexOffset', DeviceSize),
+])
+CmdProcessCommandsInfoNVX.declare_autoarrays([
+    (u'indirectCommandsTokens', (u'indirectCommandsTokenCount', u'pIndirectCommandsTokens')),
+])
+CmdProcessCommandsInfoNVX.sType = u'CMD_PROCESS_COMMANDS_INFO_NVX'
+CmdReserveSpaceForCommandsInfoNVX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'objectTable', ObjectTableNVX),
+    (u'indirectCommandsLayout', IndirectCommandsLayoutNVX),
+    (u'maxSequencesCount', ctypes.c_uint32),
+])
+CmdReserveSpaceForCommandsInfoNVX.sType = u'CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX'
+ObjectTableCreateInfoNVX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'objectCount', ctypes.c_uint32),
+    (u'pObjectEntryTypes', vkbuilder.Pointer(ObjectEntryTypeNVX)),
+    (u'pObjectEntryCounts', vkbuilder.Pointer(ctypes.c_uint32)),
+    (u'pObjectEntryUsageFlags', vkbuilder.Pointer(ObjectEntryUsageFlagsNVX)),
+    (u'maxUniformBuffersPerDescriptor', ctypes.c_uint32),
+    (u'maxStorageBuffersPerDescriptor', ctypes.c_uint32),
+    (u'maxStorageImagesPerDescriptor', ctypes.c_uint32),
+    (u'maxSampledImagesPerDescriptor', ctypes.c_uint32),
+    (u'maxPipelineLayouts', ctypes.c_uint32),
+])
+ObjectTableCreateInfoNVX.declare_autoarrays([
+    (u'objectEntryTypes', (u'objectCount', u'pObjectEntryTypes')),
+    (u'objectEntryCounts', (u'objectCount', u'pObjectEntryCounts')),
+    (u'objectEntryUsageFlags', (u'objectCount', u'pObjectEntryUsageFlags')),
+])
+ObjectTableCreateInfoNVX.sType = u'OBJECT_TABLE_CREATE_INFO_NVX'
+ObjectTableEntryNVX.declare([
+    (u'type', ObjectEntryTypeNVX),
+    (u'flags', ObjectEntryUsageFlagsNVX),
+])
+ObjectTablePipelineEntryNVX.declare([
+    (u'type', ObjectEntryTypeNVX),
+    (u'flags', ObjectEntryUsageFlagsNVX),
+    (u'pipeline', Pipeline),
+])
+ObjectTableDescriptorSetEntryNVX.declare([
+    (u'type', ObjectEntryTypeNVX),
+    (u'flags', ObjectEntryUsageFlagsNVX),
+    (u'pipelineLayout', PipelineLayout),
+    (u'descriptorSet', DescriptorSet),
+])
+ObjectTableVertexBufferEntryNVX.declare([
+    (u'type', ObjectEntryTypeNVX),
+    (u'flags', ObjectEntryUsageFlagsNVX),
+    (u'buffer', Buffer),
+])
+ObjectTableIndexBufferEntryNVX.declare([
+    (u'type', ObjectEntryTypeNVX),
+    (u'flags', ObjectEntryUsageFlagsNVX),
+    (u'buffer', Buffer),
+    (u'indexType', IndexType),
+])
+ObjectTablePushConstantEntryNVX.declare([
+    (u'type', ObjectEntryTypeNVX),
+    (u'flags', ObjectEntryUsageFlagsNVX),
+    (u'pipelineLayout', PipelineLayout),
+    (u'stageFlags', ShaderStageFlags),
+])
+PhysicalDeviceFeatures2KHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'features', PhysicalDeviceFeatures),
+])
+PhysicalDeviceFeatures2KHR.sType = u'PHYSICAL_DEVICE_FEATURES_2KHR'
+PhysicalDeviceProperties2KHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'properties', PhysicalDeviceProperties),
+])
+PhysicalDeviceProperties2KHR.sType = u'PHYSICAL_DEVICE_PROPERTIES_2KHR'
+FormatProperties2KHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'formatProperties', FormatProperties),
+])
+FormatProperties2KHR.sType = u'FORMAT_PROPERTIES_2KHR'
+ImageFormatProperties2KHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'imageFormatProperties', ImageFormatProperties),
+])
+ImageFormatProperties2KHR.sType = u'IMAGE_FORMAT_PROPERTIES_2KHR'
+PhysicalDeviceImageFormatInfo2KHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'format', Format),
+    (u'type', ImageType),
+    (u'tiling', ImageTiling),
+    (u'usage', ImageUsageFlags),
+    (u'flags', ImageCreateFlags),
+])
+PhysicalDeviceImageFormatInfo2KHR.sType = u'PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2KHR'
+QueueFamilyProperties2KHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'queueFamilyProperties', QueueFamilyProperties),
+])
+QueueFamilyProperties2KHR.sType = u'QUEUE_FAMILY_PROPERTIES_2KHR'
+PhysicalDeviceMemoryProperties2KHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'memoryProperties', PhysicalDeviceMemoryProperties),
+])
+PhysicalDeviceMemoryProperties2KHR.sType = u'PHYSICAL_DEVICE_MEMORY_PROPERTIES_2KHR'
+SparseImageFormatProperties2KHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'properties', SparseImageFormatProperties),
+])
+SparseImageFormatProperties2KHR.sType = u'SPARSE_IMAGE_FORMAT_PROPERTIES_2KHR'
+PhysicalDeviceSparseImageFormatInfo2KHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'format', Format),
+    (u'type', ImageType),
+    (u'samples', SampleCountFlags),
+    (u'usage', ImageUsageFlags),
+    (u'tiling', ImageTiling),
+])
+PhysicalDeviceSparseImageFormatInfo2KHR.sType = u'PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2KHR'
+PhysicalDevicePushDescriptorPropertiesKHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'maxPushDescriptors', ctypes.c_uint32),
+])
+PhysicalDevicePushDescriptorPropertiesKHR.sType = u'PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR'
+ExternalMemoryPropertiesKHX.declare([
+    (u'externalMemoryFeatures', ExternalMemoryFeatureFlagsKHX),
+    (u'exportFromImportedHandleTypes', ExternalMemoryHandleTypeFlagsKHX),
+    (u'compatibleHandleTypes', ExternalMemoryHandleTypeFlagsKHX),
+])
+PhysicalDeviceExternalImageFormatInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleType', ExternalMemoryHandleTypeFlagsKHX),
+])
+PhysicalDeviceExternalImageFormatInfoKHX.sType = u'PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHX'
+ExternalImageFormatPropertiesKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'externalMemoryProperties', ExternalMemoryPropertiesKHX),
+])
+ExternalImageFormatPropertiesKHX.sType = u'EXTERNAL_IMAGE_FORMAT_PROPERTIES_KHX'
+PhysicalDeviceExternalBufferInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'flags', BufferCreateFlags),
+    (u'usage', BufferUsageFlags),
+    (u'handleType', ExternalMemoryHandleTypeFlagsKHX),
+])
+PhysicalDeviceExternalBufferInfoKHX.sType = u'PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO_KHX'
+ExternalBufferPropertiesKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'externalMemoryProperties', ExternalMemoryPropertiesKHX),
+])
+ExternalBufferPropertiesKHX.sType = u'EXTERNAL_BUFFER_PROPERTIES_KHX'
+PhysicalDeviceIDPropertiesKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'deviceUUID', vkbuilder.Array(ctypes.c_uint8, UUID_SIZE)),
+    (u'driverUUID', vkbuilder.Array(ctypes.c_uint8, UUID_SIZE)),
+    (u'deviceLUID', vkbuilder.Array(ctypes.c_uint8, LUID_SIZE_KHX)),
+    (u'deviceLUIDValid', Bool32),
+])
+PhysicalDeviceIDPropertiesKHX.sType = u'PHYSICAL_DEVICE_IDPROPERTIES_KHX'
+ExternalMemoryImageCreateInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleTypes', ExternalMemoryHandleTypeFlagsKHX),
+])
+ExternalMemoryImageCreateInfoKHX.sType = u'EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHX'
+ExternalMemoryBufferCreateInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleTypes', ExternalMemoryHandleTypeFlagsKHX),
+])
+ExternalMemoryBufferCreateInfoKHX.sType = u'EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHX'
+ExportMemoryAllocateInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleTypes', ExternalMemoryHandleTypeFlagsKHX),
+])
+ExportMemoryAllocateInfoKHX.sType = u'EXPORT_MEMORY_ALLOCATE_INFO_KHX'
+ImportMemoryWin32HandleInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleType', ExternalMemoryHandleTypeFlagsKHX),
+    (u'handle', ctypes.c_void_p),
+])
+ImportMemoryWin32HandleInfoKHX.sType = u'IMPORT_MEMORY_WIN_32_HANDLE_INFO_KHX'
+ExportMemoryWin32HandleInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'pAttributes', vkbuilder.Pointer(ctypes.c_void_p)),
+    (u'dwAccess', ctypes.c_uint32),
+    (u'name', ctypes.c_void_p),
+])
+ExportMemoryWin32HandleInfoKHX.declare_aliases([
+    (u'attributes', u'pAttributes'),
+])
+ExportMemoryWin32HandleInfoKHX.sType = u'EXPORT_MEMORY_WIN_32_HANDLE_INFO_KHX'
+MemoryWin32HandlePropertiesKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'memoryTypeBits', ctypes.c_uint32),
+])
+MemoryWin32HandlePropertiesKHX.sType = u'MEMORY_WIN_32_HANDLE_PROPERTIES_KHX'
+ImportMemoryFdInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleType', ExternalMemoryHandleTypeFlagsKHX),
+    (u'fd', ctypes.c_int),
+])
+ImportMemoryFdInfoKHX.sType = u'IMPORT_MEMORY_FD_INFO_KHX'
+MemoryFdPropertiesKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'memoryTypeBits', ctypes.c_uint32),
+])
+MemoryFdPropertiesKHX.sType = u'MEMORY_FD_PROPERTIES_KHX'
+Win32KeyedMutexAcquireReleaseInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'acquireCount', ctypes.c_uint32),
+    (u'pAcquireSyncs', vkbuilder.Pointer(DeviceMemory)),
+    (u'pAcquireKeys', vkbuilder.Pointer(ctypes.c_uint64)),
+    (u'pAcquireTimeouts', vkbuilder.Pointer(ctypes.c_uint32)),
+    (u'releaseCount', ctypes.c_uint32),
+    (u'pReleaseSyncs', vkbuilder.Pointer(DeviceMemory)),
+    (u'pReleaseKeys', vkbuilder.Pointer(ctypes.c_uint64)),
+])
+Win32KeyedMutexAcquireReleaseInfoKHX.declare_autoarrays([
+    (u'acquireSyncs', (u'acquireCount', u'pAcquireSyncs')),
+    (u'acquireKeys', (u'acquireCount', u'pAcquireKeys')),
+    (u'acquireTimeouts', (u'acquireCount', u'pAcquireTimeouts')),
+    (u'releaseSyncs', (u'releaseCount', u'pReleaseSyncs')),
+    (u'releaseKeys', (u'releaseCount', u'pReleaseKeys')),
+])
+Win32KeyedMutexAcquireReleaseInfoKHX.sType = u'WIN_32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHX'
+PhysicalDeviceExternalSemaphoreInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleType', ExternalSemaphoreHandleTypeFlagsKHX),
+])
+PhysicalDeviceExternalSemaphoreInfoKHX.sType = u'PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHX'
+ExternalSemaphorePropertiesKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'exportFromImportedHandleTypes', ExternalSemaphoreHandleTypeFlagsKHX),
+    (u'compatibleHandleTypes', ExternalSemaphoreHandleTypeFlagsKHX),
+    (u'externalSemaphoreFeatures', ExternalSemaphoreFeatureFlagsKHX),
+])
+ExternalSemaphorePropertiesKHX.sType = u'EXTERNAL_SEMAPHORE_PROPERTIES_KHX'
+ExportSemaphoreCreateInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'handleTypes', ExternalSemaphoreHandleTypeFlagsKHX),
+])
+ExportSemaphoreCreateInfoKHX.sType = u'EXPORT_SEMAPHORE_CREATE_INFO_KHX'
+ImportSemaphoreWin32HandleInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'semaphore', Semaphore),
+    (u'handleType', ExternalSemaphoreHandleTypeFlagsKHX),
+    (u'handle', ctypes.c_void_p),
+])
+ImportSemaphoreWin32HandleInfoKHX.sType = u'IMPORT_SEMAPHORE_WIN_32_HANDLE_INFO_KHX'
+ExportSemaphoreWin32HandleInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'pAttributes', vkbuilder.Pointer(ctypes.c_void_p)),
+    (u'dwAccess', ctypes.c_uint32),
+    (u'name', ctypes.c_void_p),
+])
+ExportSemaphoreWin32HandleInfoKHX.declare_aliases([
+    (u'attributes', u'pAttributes'),
+])
+ExportSemaphoreWin32HandleInfoKHX.sType = u'EXPORT_SEMAPHORE_WIN_32_HANDLE_INFO_KHX'
+D3D12FenceSubmitInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'waitSemaphoreValuesCount', ctypes.c_uint32),
+    (u'pWaitSemaphoreValues', vkbuilder.Pointer(ctypes.c_uint64)),
+    (u'signalSemaphoreValuesCount', ctypes.c_uint32),
+    (u'pSignalSemaphoreValues', vkbuilder.Pointer(ctypes.c_uint64)),
+])
+D3D12FenceSubmitInfoKHX.declare_autoarrays([
+    (u'waitSemaphoreValues', (u'waitSemaphoreValuesCount', u'pWaitSemaphoreValues')),
+    (u'signalSemaphoreValues', (u'signalSemaphoreValuesCount', u'pSignalSemaphoreValues')),
+])
+D3D12FenceSubmitInfoKHX.sType = u'D3D12_FENCE_SUBMIT_INFO_KHX'
+ImportSemaphoreFdInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'semaphore', Semaphore),
+    (u'handleType', ExternalSemaphoreHandleTypeFlagsKHX),
+    (u'fd', ctypes.c_int),
+])
+ImportSemaphoreFdInfoKHX.sType = u'IMPORT_SEMAPHORE_FD_INFO_KHX'
+PhysicalDeviceMultiviewFeaturesKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'multiview', Bool32),
+    (u'multiviewGeometryShader', Bool32),
+    (u'multiviewTessellationShader', Bool32),
+])
+PhysicalDeviceMultiviewFeaturesKHX.sType = u'PHYSICAL_DEVICE_MULTIVIEW_FEATURES_KHX'
+PhysicalDeviceMultiviewPropertiesKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'maxMultiviewViewCount', ctypes.c_uint32),
+    (u'maxMultiviewInstanceIndex', ctypes.c_uint32),
+])
+PhysicalDeviceMultiviewPropertiesKHX.sType = u'PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES_KHX'
+RenderPassMultiviewCreateInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'subpassCount', ctypes.c_uint32),
+    (u'pViewMasks', vkbuilder.Pointer(ctypes.c_uint32)),
+    (u'dependencyCount', ctypes.c_uint32),
+    (u'pViewOffsets', vkbuilder.Pointer(ctypes.c_int32)),
+    (u'correlationMaskCount', ctypes.c_uint32),
+    (u'pCorrelationMasks', vkbuilder.Pointer(ctypes.c_uint32)),
+])
+RenderPassMultiviewCreateInfoKHX.declare_autoarrays([
+    (u'viewMasks', (u'subpassCount', u'pViewMasks')),
+    (u'viewOffsets', (u'dependencyCount', u'pViewOffsets')),
+    (u'correlationMasks', (u'correlationMaskCount', u'pCorrelationMasks')),
+])
+RenderPassMultiviewCreateInfoKHX.sType = u'RENDER_PASS_MULTIVIEW_CREATE_INFO_KHX'
+SurfaceCapabilities2EXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'minImageCount', ctypes.c_uint32),
+    (u'maxImageCount', ctypes.c_uint32),
+    (u'currentExtent', Extent2D),
+    (u'minImageExtent', Extent2D),
+    (u'maxImageExtent', Extent2D),
+    (u'maxImageArrayLayers', ctypes.c_uint32),
+    (u'supportedTransforms', SurfaceTransformFlagsKHR),
+    (u'currentTransform', SurfaceTransformFlagsKHR),
+    (u'supportedCompositeAlpha', CompositeAlphaFlagsKHR),
+    (u'supportedUsageFlags', ImageUsageFlags),
+    (u'supportedSurfaceCounters', SurfaceCounterFlagsEXT),
+])
+SurfaceCapabilities2EXT.sType = u'SURFACE_CAPABILITIES_2EXT'
+DisplayPowerInfoEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'powerState', DisplayPowerStateEXT),
+])
+DisplayPowerInfoEXT.sType = u'DISPLAY_POWER_INFO_EXT'
+DeviceEventInfoEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'deviceEvent', DeviceEventTypeEXT),
+])
+DeviceEventInfoEXT.sType = u'DEVICE_EVENT_INFO_EXT'
+DisplayEventInfoEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'displayEvent', DisplayEventTypeEXT),
+])
+DisplayEventInfoEXT.sType = u'DISPLAY_EVENT_INFO_EXT'
+SwapchainCounterCreateInfoEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'surfaceCounters', SurfaceCounterFlagsEXT),
+])
+SwapchainCounterCreateInfoEXT.sType = u'SWAPCHAIN_COUNTER_CREATE_INFO_EXT'
+PhysicalDeviceGroupPropertiesKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'physicalDeviceCount', ctypes.c_uint32),
+    (u'physicalDevices', vkbuilder.Array(PhysicalDevice, MAX_DEVICE_GROUP_SIZE_KHX)),
+    (u'subsetAllocation', Bool32),
+])
+PhysicalDeviceGroupPropertiesKHX.sType = u'PHYSICAL_DEVICE_GROUP_PROPERTIES_KHX'
+MemoryAllocateFlagsInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'flags', MemoryAllocateFlagsKHX),
+    (u'deviceMask', ctypes.c_uint32),
+])
+MemoryAllocateFlagsInfoKHX.sType = u'MEMORY_ALLOCATE_FLAGS_INFO_KHX'
+BindBufferMemoryInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'buffer', Buffer),
+    (u'memory', DeviceMemory),
+    (u'memoryOffset', DeviceSize),
+    (u'deviceIndexCount', ctypes.c_uint32),
+    (u'pDeviceIndices', vkbuilder.Pointer(ctypes.c_uint32)),
+])
+BindBufferMemoryInfoKHX.declare_autoarrays([
+    (u'deviceIndices', (u'deviceIndexCount', u'pDeviceIndices')),
+])
+BindBufferMemoryInfoKHX.sType = u'BIND_BUFFER_MEMORY_INFO_KHX'
+BindImageMemoryInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'image', Image),
+    (u'memory', DeviceMemory),
+    (u'memoryOffset', DeviceSize),
+    (u'deviceIndexCount', ctypes.c_uint32),
+    (u'pDeviceIndices', vkbuilder.Pointer(ctypes.c_uint32)),
+    (u'SFRRectCount', ctypes.c_uint32),
+    (u'pSFRRects', vkbuilder.Pointer(Rect2D)),
+])
+BindImageMemoryInfoKHX.declare_autoarrays([
+    (u'deviceIndices', (u'deviceIndexCount', u'pDeviceIndices')),
+    (u'sFRRects', (u'SFRRectCount', u'pSFRRects')),
+])
+BindImageMemoryInfoKHX.sType = u'BIND_IMAGE_MEMORY_INFO_KHX'
+DeviceGroupRenderPassBeginInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'deviceMask', ctypes.c_uint32),
+    (u'deviceRenderAreaCount', ctypes.c_uint32),
+    (u'pDeviceRenderAreas', vkbuilder.Pointer(Rect2D)),
+])
+DeviceGroupRenderPassBeginInfoKHX.declare_autoarrays([
+    (u'deviceRenderAreas', (u'deviceRenderAreaCount', u'pDeviceRenderAreas')),
+])
+DeviceGroupRenderPassBeginInfoKHX.sType = u'DEVICE_GROUP_RENDER_PASS_BEGIN_INFO_KHX'
+DeviceGroupCommandBufferBeginInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'deviceMask', ctypes.c_uint32),
+])
+DeviceGroupCommandBufferBeginInfoKHX.sType = u'DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO_KHX'
+DeviceGroupSubmitInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'waitSemaphoreCount', ctypes.c_uint32),
+    (u'pWaitSemaphoreDeviceIndices', vkbuilder.Pointer(ctypes.c_uint32)),
+    (u'commandBufferCount', ctypes.c_uint32),
+    (u'pCommandBufferDeviceMasks', vkbuilder.Pointer(ctypes.c_uint32)),
+    (u'signalSemaphoreCount', ctypes.c_uint32),
+    (u'pSignalSemaphoreDeviceIndices', vkbuilder.Pointer(ctypes.c_uint32)),
+])
+DeviceGroupSubmitInfoKHX.declare_autoarrays([
+    (u'waitSemaphoreDeviceIndices', (u'waitSemaphoreCount', u'pWaitSemaphoreDeviceIndices')),
+    (u'commandBufferDeviceMasks', (u'commandBufferCount', u'pCommandBufferDeviceMasks')),
+    (u'signalSemaphoreDeviceIndices', (u'signalSemaphoreCount', u'pSignalSemaphoreDeviceIndices')),
+])
+DeviceGroupSubmitInfoKHX.sType = u'DEVICE_GROUP_SUBMIT_INFO_KHX'
+DeviceGroupBindSparseInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'resourceDeviceIndex', ctypes.c_uint32),
+    (u'memoryDeviceIndex', ctypes.c_uint32),
+])
+DeviceGroupBindSparseInfoKHX.sType = u'DEVICE_GROUP_BIND_SPARSE_INFO_KHX'
+DeviceGroupPresentCapabilitiesKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'presentMask', vkbuilder.Array(ctypes.c_uint32, MAX_DEVICE_GROUP_SIZE_KHX)),
+    (u'modes', DeviceGroupPresentModeFlagsKHX),
+])
+DeviceGroupPresentCapabilitiesKHX.sType = u'DEVICE_GROUP_PRESENT_CAPABILITIES_KHX'
+ImageSwapchainCreateInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'swapchain', SwapchainKHR),
+])
+ImageSwapchainCreateInfoKHX.sType = u'IMAGE_SWAPCHAIN_CREATE_INFO_KHX'
+BindImageMemorySwapchainInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'swapchain', SwapchainKHR),
+    (u'imageIndex', ctypes.c_uint32),
+])
+BindImageMemorySwapchainInfoKHX.sType = u'BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHX'
+AcquireNextImageInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'swapchain', SwapchainKHR),
+    (u'timeout', ctypes.c_uint64),
+    (u'semaphore', Semaphore),
+    (u'fence', Fence),
+    (u'deviceMask', ctypes.c_uint32),
+])
+AcquireNextImageInfoKHX.sType = u'ACQUIRE_NEXT_IMAGE_INFO_KHX'
+DeviceGroupPresentInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'swapchainCount', ctypes.c_uint32),
+    (u'pDeviceMasks', vkbuilder.Pointer(ctypes.c_uint32)),
+    (u'mode', DeviceGroupPresentModeFlagsKHX),
+])
+DeviceGroupPresentInfoKHX.declare_autoarrays([
+    (u'deviceMasks', (u'swapchainCount', u'pDeviceMasks')),
+])
+DeviceGroupPresentInfoKHX.sType = u'DEVICE_GROUP_PRESENT_INFO_KHX'
+DeviceGroupDeviceCreateInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'physicalDeviceCount', ctypes.c_uint32),
+    (u'pPhysicalDevices', vkbuilder.Pointer(PhysicalDevice)),
+])
+DeviceGroupDeviceCreateInfoKHX.declare_autoarrays([
+    (u'physicalDevices', (u'physicalDeviceCount', u'pPhysicalDevices')),
+])
+DeviceGroupDeviceCreateInfoKHX.sType = u'DEVICE_GROUP_DEVICE_CREATE_INFO_KHX'
+DeviceGroupSwapchainCreateInfoKHX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'modes', DeviceGroupPresentModeFlagsKHX),
+])
+DeviceGroupSwapchainCreateInfoKHX.sType = u'DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHX'
+DescriptorUpdateTemplateEntryKHR.declare([
+    (u'dstBinding', ctypes.c_uint32),
+    (u'dstArrayElement', ctypes.c_uint32),
+    (u'descriptorCount', ctypes.c_uint32),
+    (u'descriptorType', DescriptorType),
+    (u'offset', ctypes.c_size_t),
+    (u'stride', ctypes.c_size_t),
+])
+DescriptorUpdateTemplateCreateInfoKHR.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'flags', DescriptorUpdateTemplateCreateFlagsKHR),
+    (u'descriptorUpdateEntryCount', ctypes.c_uint32),
+    (u'pDescriptorUpdateEntries', vkbuilder.Pointer(DescriptorUpdateTemplateEntryKHR)),
+    (u'templateType', DescriptorUpdateTemplateTypeKHR),
+    (u'descriptorSetLayout', DescriptorSetLayout),
+    (u'pipelineBindPoint', PipelineBindPoint),
+    (u'pipelineLayout', PipelineLayout),
+    (u'set', ctypes.c_uint32),
+])
+DescriptorUpdateTemplateCreateInfoKHR.declare_autoarrays([
+    (u'descriptorUpdateEntries', (u'descriptorUpdateEntryCount', u'pDescriptorUpdateEntries')),
+])
+DescriptorUpdateTemplateCreateInfoKHR.sType = u'DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR'
+XYColorEXT.declare([
+    (u'x', ctypes.c_float),
+    (u'y', ctypes.c_float),
+])
+HdrMetadataEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'displayPrimaryRed', XYColorEXT),
+    (u'displayPrimaryGreen', XYColorEXT),
+    (u'displayPrimaryBlue', XYColorEXT),
+    (u'whitePoint', XYColorEXT),
+    (u'maxLuminance', ctypes.c_float),
+    (u'minLuminance', ctypes.c_float),
+    (u'maxContentLightLevel', ctypes.c_float),
+    (u'maxFrameAverageLightLevel', ctypes.c_float),
+])
+HdrMetadataEXT.sType = u'HDR_METADATA_EXT'
+RefreshCycleDurationGOOGLE.declare([
+    (u'refreshDuration', ctypes.c_uint64),
+])
+PastPresentationTimingGOOGLE.declare([
+    (u'presentID', ctypes.c_uint32),
+    (u'desiredPresentTime', ctypes.c_uint64),
+    (u'actualPresentTime', ctypes.c_uint64),
+    (u'earliestPresentTime', ctypes.c_uint64),
+    (u'presentMargin', ctypes.c_uint64),
+])
+PresentTimesInfoGOOGLE.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'swapchainCount', ctypes.c_uint32),
+    (u'pTimes', vkbuilder.Pointer(PresentTimeGOOGLE)),
+])
+PresentTimesInfoGOOGLE.declare_autoarrays([
+    (u'times', (u'swapchainCount', u'pTimes')),
+])
+PresentTimesInfoGOOGLE.sType = u'PRESENT_TIMES_INFO_GOOGLE'
+PresentTimeGOOGLE.declare([
+    (u'presentID', ctypes.c_uint32),
+    (u'desiredPresentTime', ctypes.c_uint64),
+])
+IOSSurfaceCreateInfoMVK.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'flags', IOSSurfaceCreateFlagsMVK),
+    (u'pView', ctypes.c_void_p),
+])
+IOSSurfaceCreateInfoMVK.declare_aliases([
+    (u'view', u'pView'),
+])
+IOSSurfaceCreateInfoMVK.sType = u'IOSSURFACE_CREATE_INFO_MVK'
+MacOSSurfaceCreateInfoMVK.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'flags', MacOSSurfaceCreateFlagsMVK),
+    (u'pView', ctypes.c_void_p),
+])
+MacOSSurfaceCreateInfoMVK.declare_aliases([
+    (u'view', u'pView'),
+])
+MacOSSurfaceCreateInfoMVK.sType = u'MAC_OSSURFACE_CREATE_INFO_MVK'
+ViewportWScalingNV.declare([
+    (u'xcoeff', ctypes.c_float),
+    (u'ycoeff', ctypes.c_float),
+])
+PipelineViewportWScalingStateCreateInfoNV.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'viewportWScalingEnable', Bool32),
+    (u'viewportCount', ctypes.c_uint32),
+    (u'pViewportWScalings', vkbuilder.Pointer(ViewportWScalingNV)),
+])
+PipelineViewportWScalingStateCreateInfoNV.declare_autoarrays([
+    (u'viewportWScalings', (u'viewportCount', u'pViewportWScalings')),
+])
+PipelineViewportWScalingStateCreateInfoNV.sType = u'PIPELINE_VIEWPORT_WSCALING_STATE_CREATE_INFO_NV'
+ViewportSwizzleNV.declare([
+    (u'x', ViewportCoordinateSwizzleNV),
+    (u'y', ViewportCoordinateSwizzleNV),
+    (u'z', ViewportCoordinateSwizzleNV),
+    (u'w', ViewportCoordinateSwizzleNV),
+])
+PipelineViewportSwizzleStateCreateInfoNV.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'flags', PipelineViewportSwizzleStateCreateFlagsNV),
+    (u'viewportCount', ctypes.c_uint32),
+    (u'pViewportSwizzles', vkbuilder.Pointer(ViewportSwizzleNV)),
+])
+PipelineViewportSwizzleStateCreateInfoNV.declare_autoarrays([
+    (u'viewportSwizzles', (u'viewportCount', u'pViewportSwizzles')),
+])
+PipelineViewportSwizzleStateCreateInfoNV.sType = u'PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV'
+PhysicalDeviceDiscardRectanglePropertiesEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'maxDiscardRectangles', ctypes.c_uint32),
+])
+PhysicalDeviceDiscardRectanglePropertiesEXT.sType = u'PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT'
+PipelineDiscardRectangleStateCreateInfoEXT.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'flags', PipelineDiscardRectangleStateCreateFlagsEXT),
+    (u'discardRectangleMode', DiscardRectangleModeEXT),
+    (u'discardRectangleCount', ctypes.c_uint32),
+    (u'pDiscardRectangles', vkbuilder.Pointer(Rect2D)),
+])
+PipelineDiscardRectangleStateCreateInfoEXT.declare_autoarrays([
+    (u'discardRectangles', (u'discardRectangleCount', u'pDiscardRectangles')),
+])
+PipelineDiscardRectangleStateCreateInfoEXT.sType = u'PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT'
+PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX.declare([
+    (u'sType', StructureType),
+    (u'pNext', ctypes.c_void_p),
+    (u'perViewPositionAllComponents', Bool32),
+])
+PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX.sType = u'PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX'
 
 try:
     createInstance = lib.vkCreateInstance
@@ -3761,7 +4838,7 @@ else:
         Buffer,
         DeviceSize,
         DeviceSize,
-        vkbuilder.Pointer(ctypes.c_uint32),
+        ctypes.c_void_p,
     ]
 
 try:
@@ -4259,6 +5336,18 @@ else:
     ]
 
 try:
+    createViSurfaceNN = lib.vkCreateViSurfaceNN
+except AttributeError as e: pass
+else:
+    createViSurfaceNN.restype = ResultCheck
+    createViSurfaceNN.argtypes = [ 
+        Instance,
+        vkbuilder.Pointer(ViSurfaceCreateInfoNN),
+        vkbuilder.Pointer(AllocationCallbacks),
+        vkbuilder.Pointer(SurfaceKHR),
+    ]
+
+try:
     createWaylandSurfaceKHR = lib.vkCreateWaylandSurfaceKHR
 except AttributeError as e: pass
 else:
@@ -4388,4 +5477,766 @@ else:
         ctypes.c_int32,
         ctypes.c_char_p,
         ctypes.c_char_p,
+    ]
+
+try:
+    debugMarkerSetObjectNameEXT = lib.vkDebugMarkerSetObjectNameEXT
+except AttributeError as e: pass
+else:
+    debugMarkerSetObjectNameEXT.restype = ResultCheck
+    debugMarkerSetObjectNameEXT.argtypes = [ 
+        Device,
+        vkbuilder.Pointer(DebugMarkerObjectNameInfoEXT),
+    ]
+
+try:
+    debugMarkerSetObjectTagEXT = lib.vkDebugMarkerSetObjectTagEXT
+except AttributeError as e: pass
+else:
+    debugMarkerSetObjectTagEXT.restype = ResultCheck
+    debugMarkerSetObjectTagEXT.argtypes = [ 
+        Device,
+        vkbuilder.Pointer(DebugMarkerObjectTagInfoEXT),
+    ]
+
+try:
+    cmdDebugMarkerBeginEXT = lib.vkCmdDebugMarkerBeginEXT
+except AttributeError as e: pass
+else:
+    cmdDebugMarkerBeginEXT.restype = None
+    cmdDebugMarkerBeginEXT.argtypes = [ 
+        CommandBuffer,
+        vkbuilder.Pointer(DebugMarkerMarkerInfoEXT),
+    ]
+
+try:
+    cmdDebugMarkerEndEXT = lib.vkCmdDebugMarkerEndEXT
+except AttributeError as e: pass
+else:
+    cmdDebugMarkerEndEXT.restype = None
+    cmdDebugMarkerEndEXT.argtypes = [ 
+        CommandBuffer,
+    ]
+
+try:
+    cmdDebugMarkerInsertEXT = lib.vkCmdDebugMarkerInsertEXT
+except AttributeError as e: pass
+else:
+    cmdDebugMarkerInsertEXT.restype = None
+    cmdDebugMarkerInsertEXT.argtypes = [ 
+        CommandBuffer,
+        vkbuilder.Pointer(DebugMarkerMarkerInfoEXT),
+    ]
+
+try:
+    getPhysicalDeviceExternalImageFormatPropertiesNV = lib.vkGetPhysicalDeviceExternalImageFormatPropertiesNV
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceExternalImageFormatPropertiesNV.restype = ResultCheck
+    getPhysicalDeviceExternalImageFormatPropertiesNV.argtypes = [ 
+        PhysicalDevice,
+        Format,
+        ImageType,
+        ImageTiling,
+        ImageUsageFlags,
+        ImageCreateFlags,
+        ExternalMemoryHandleTypeFlagsNV,
+        vkbuilder.Pointer(ExternalImageFormatPropertiesNV),
+    ]
+
+try:
+    getMemoryWin32HandleNV = lib.vkGetMemoryWin32HandleNV
+except AttributeError as e: pass
+else:
+    getMemoryWin32HandleNV.restype = ResultCheck
+    getMemoryWin32HandleNV.argtypes = [ 
+        Device,
+        DeviceMemory,
+        ExternalMemoryHandleTypeFlagsNV,
+        vkbuilder.Pointer(ctypes.c_void_p),
+    ]
+
+try:
+    cmdDrawIndirectCountAMD = lib.vkCmdDrawIndirectCountAMD
+except AttributeError as e: pass
+else:
+    cmdDrawIndirectCountAMD.restype = None
+    cmdDrawIndirectCountAMD.argtypes = [ 
+        CommandBuffer,
+        Buffer,
+        DeviceSize,
+        Buffer,
+        DeviceSize,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+    ]
+
+try:
+    cmdDrawIndexedIndirectCountAMD = lib.vkCmdDrawIndexedIndirectCountAMD
+except AttributeError as e: pass
+else:
+    cmdDrawIndexedIndirectCountAMD.restype = None
+    cmdDrawIndexedIndirectCountAMD.argtypes = [ 
+        CommandBuffer,
+        Buffer,
+        DeviceSize,
+        Buffer,
+        DeviceSize,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+    ]
+
+try:
+    cmdProcessCommandsNVX = lib.vkCmdProcessCommandsNVX
+except AttributeError as e: pass
+else:
+    cmdProcessCommandsNVX.restype = None
+    cmdProcessCommandsNVX.argtypes = [ 
+        CommandBuffer,
+        vkbuilder.Pointer(CmdProcessCommandsInfoNVX),
+    ]
+
+try:
+    cmdReserveSpaceForCommandsNVX = lib.vkCmdReserveSpaceForCommandsNVX
+except AttributeError as e: pass
+else:
+    cmdReserveSpaceForCommandsNVX.restype = None
+    cmdReserveSpaceForCommandsNVX.argtypes = [ 
+        CommandBuffer,
+        vkbuilder.Pointer(CmdReserveSpaceForCommandsInfoNVX),
+    ]
+
+try:
+    createIndirectCommandsLayoutNVX = lib.vkCreateIndirectCommandsLayoutNVX
+except AttributeError as e: pass
+else:
+    createIndirectCommandsLayoutNVX.restype = ResultCheck
+    createIndirectCommandsLayoutNVX.argtypes = [ 
+        Device,
+        vkbuilder.Pointer(IndirectCommandsLayoutCreateInfoNVX),
+        vkbuilder.Pointer(AllocationCallbacks),
+        vkbuilder.Pointer(IndirectCommandsLayoutNVX),
+    ]
+
+try:
+    destroyIndirectCommandsLayoutNVX = lib.vkDestroyIndirectCommandsLayoutNVX
+except AttributeError as e: pass
+else:
+    destroyIndirectCommandsLayoutNVX.restype = None
+    destroyIndirectCommandsLayoutNVX.argtypes = [ 
+        Device,
+        IndirectCommandsLayoutNVX,
+        vkbuilder.Pointer(AllocationCallbacks),
+    ]
+
+try:
+    createObjectTableNVX = lib.vkCreateObjectTableNVX
+except AttributeError as e: pass
+else:
+    createObjectTableNVX.restype = ResultCheck
+    createObjectTableNVX.argtypes = [ 
+        Device,
+        vkbuilder.Pointer(ObjectTableCreateInfoNVX),
+        vkbuilder.Pointer(AllocationCallbacks),
+        vkbuilder.Pointer(ObjectTableNVX),
+    ]
+
+try:
+    destroyObjectTableNVX = lib.vkDestroyObjectTableNVX
+except AttributeError as e: pass
+else:
+    destroyObjectTableNVX.restype = None
+    destroyObjectTableNVX.argtypes = [ 
+        Device,
+        ObjectTableNVX,
+        vkbuilder.Pointer(AllocationCallbacks),
+    ]
+
+try:
+    registerObjectsNVX = lib.vkRegisterObjectsNVX
+except AttributeError as e: pass
+else:
+    registerObjectsNVX.restype = ResultCheck
+    registerObjectsNVX.argtypes = [ 
+        Device,
+        ObjectTableNVX,
+        ctypes.c_uint32,
+        vkbuilder.Pointer(vkbuilder.Pointer(ObjectTableEntryNVX)),
+        vkbuilder.Pointer(ctypes.c_uint32),
+    ]
+
+try:
+    unregisterObjectsNVX = lib.vkUnregisterObjectsNVX
+except AttributeError as e: pass
+else:
+    unregisterObjectsNVX.restype = ResultCheck
+    unregisterObjectsNVX.argtypes = [ 
+        Device,
+        ObjectTableNVX,
+        ctypes.c_uint32,
+        vkbuilder.Pointer(ObjectEntryTypeNVX),
+        vkbuilder.Pointer(ctypes.c_uint32),
+    ]
+
+try:
+    getPhysicalDeviceGeneratedCommandsPropertiesNVX = lib.vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceGeneratedCommandsPropertiesNVX.restype = None
+    getPhysicalDeviceGeneratedCommandsPropertiesNVX.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(DeviceGeneratedCommandsFeaturesNVX),
+        vkbuilder.Pointer(DeviceGeneratedCommandsLimitsNVX),
+    ]
+
+try:
+    getPhysicalDeviceFeatures2KHR = lib.vkGetPhysicalDeviceFeatures2KHR
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceFeatures2KHR.restype = None
+    getPhysicalDeviceFeatures2KHR.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(PhysicalDeviceFeatures2KHR),
+    ]
+
+try:
+    getPhysicalDeviceProperties2KHR = lib.vkGetPhysicalDeviceProperties2KHR
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceProperties2KHR.restype = None
+    getPhysicalDeviceProperties2KHR.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(PhysicalDeviceProperties2KHR),
+    ]
+
+try:
+    getPhysicalDeviceFormatProperties2KHR = lib.vkGetPhysicalDeviceFormatProperties2KHR
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceFormatProperties2KHR.restype = None
+    getPhysicalDeviceFormatProperties2KHR.argtypes = [ 
+        PhysicalDevice,
+        Format,
+        vkbuilder.Pointer(FormatProperties2KHR),
+    ]
+
+try:
+    getPhysicalDeviceImageFormatProperties2KHR = lib.vkGetPhysicalDeviceImageFormatProperties2KHR
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceImageFormatProperties2KHR.restype = ResultCheck
+    getPhysicalDeviceImageFormatProperties2KHR.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(PhysicalDeviceImageFormatInfo2KHR),
+        vkbuilder.Pointer(ImageFormatProperties2KHR),
+    ]
+
+try:
+    getPhysicalDeviceQueueFamilyProperties2KHR = lib.vkGetPhysicalDeviceQueueFamilyProperties2KHR
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceQueueFamilyProperties2KHR.restype = None
+    getPhysicalDeviceQueueFamilyProperties2KHR.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(ctypes.c_uint32),
+        vkbuilder.Pointer(QueueFamilyProperties2KHR),
+    ]
+
+try:
+    getPhysicalDeviceMemoryProperties2KHR = lib.vkGetPhysicalDeviceMemoryProperties2KHR
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceMemoryProperties2KHR.restype = None
+    getPhysicalDeviceMemoryProperties2KHR.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(PhysicalDeviceMemoryProperties2KHR),
+    ]
+
+try:
+    getPhysicalDeviceSparseImageFormatProperties2KHR = lib.vkGetPhysicalDeviceSparseImageFormatProperties2KHR
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceSparseImageFormatProperties2KHR.restype = None
+    getPhysicalDeviceSparseImageFormatProperties2KHR.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(PhysicalDeviceSparseImageFormatInfo2KHR),
+        vkbuilder.Pointer(ctypes.c_uint32),
+        vkbuilder.Pointer(SparseImageFormatProperties2KHR),
+    ]
+
+try:
+    cmdPushDescriptorSetKHR = lib.vkCmdPushDescriptorSetKHR
+except AttributeError as e: pass
+else:
+    cmdPushDescriptorSetKHR.restype = None
+    cmdPushDescriptorSetKHR.argtypes = [ 
+        CommandBuffer,
+        PipelineBindPoint,
+        PipelineLayout,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        vkbuilder.Pointer(WriteDescriptorSet),
+    ]
+
+try:
+    trimCommandPoolKHR = lib.vkTrimCommandPoolKHR
+except AttributeError as e: pass
+else:
+    trimCommandPoolKHR.restype = None
+    trimCommandPoolKHR.argtypes = [ 
+        Device,
+        CommandPool,
+        CommandPoolTrimFlagsKHR,
+    ]
+
+try:
+    getPhysicalDeviceExternalBufferPropertiesKHX = lib.vkGetPhysicalDeviceExternalBufferPropertiesKHX
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceExternalBufferPropertiesKHX.restype = None
+    getPhysicalDeviceExternalBufferPropertiesKHX.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(PhysicalDeviceExternalBufferInfoKHX),
+        vkbuilder.Pointer(ExternalBufferPropertiesKHX),
+    ]
+
+try:
+    getMemoryWin32HandleKHX = lib.vkGetMemoryWin32HandleKHX
+except AttributeError as e: pass
+else:
+    getMemoryWin32HandleKHX.restype = ResultCheck
+    getMemoryWin32HandleKHX.argtypes = [ 
+        Device,
+        DeviceMemory,
+        ExternalMemoryHandleTypeFlagsKHX,
+        vkbuilder.Pointer(ctypes.c_void_p),
+    ]
+
+try:
+    getMemoryWin32HandlePropertiesKHX = lib.vkGetMemoryWin32HandlePropertiesKHX
+except AttributeError as e: pass
+else:
+    getMemoryWin32HandlePropertiesKHX.restype = ResultCheck
+    getMemoryWin32HandlePropertiesKHX.argtypes = [ 
+        Device,
+        ExternalMemoryHandleTypeFlagsKHX,
+        ctypes.c_void_p,
+        vkbuilder.Pointer(MemoryWin32HandlePropertiesKHX),
+    ]
+
+try:
+    getMemoryFdKHX = lib.vkGetMemoryFdKHX
+except AttributeError as e: pass
+else:
+    getMemoryFdKHX.restype = ResultCheck
+    getMemoryFdKHX.argtypes = [ 
+        Device,
+        DeviceMemory,
+        ExternalMemoryHandleTypeFlagsKHX,
+        vkbuilder.Pointer(ctypes.c_int),
+    ]
+
+try:
+    getMemoryFdPropertiesKHX = lib.vkGetMemoryFdPropertiesKHX
+except AttributeError as e: pass
+else:
+    getMemoryFdPropertiesKHX.restype = ResultCheck
+    getMemoryFdPropertiesKHX.argtypes = [ 
+        Device,
+        ExternalMemoryHandleTypeFlagsKHX,
+        ctypes.c_int,
+        vkbuilder.Pointer(MemoryFdPropertiesKHX),
+    ]
+
+try:
+    getPhysicalDeviceExternalSemaphorePropertiesKHX = lib.vkGetPhysicalDeviceExternalSemaphorePropertiesKHX
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceExternalSemaphorePropertiesKHX.restype = None
+    getPhysicalDeviceExternalSemaphorePropertiesKHX.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(PhysicalDeviceExternalSemaphoreInfoKHX),
+        vkbuilder.Pointer(ExternalSemaphorePropertiesKHX),
+    ]
+
+try:
+    getSemaphoreWin32HandleKHX = lib.vkGetSemaphoreWin32HandleKHX
+except AttributeError as e: pass
+else:
+    getSemaphoreWin32HandleKHX.restype = ResultCheck
+    getSemaphoreWin32HandleKHX.argtypes = [ 
+        Device,
+        Semaphore,
+        ExternalSemaphoreHandleTypeFlagsKHX,
+        vkbuilder.Pointer(ctypes.c_void_p),
+    ]
+
+try:
+    importSemaphoreWin32HandleKHX = lib.vkImportSemaphoreWin32HandleKHX
+except AttributeError as e: pass
+else:
+    importSemaphoreWin32HandleKHX.restype = ResultCheck
+    importSemaphoreWin32HandleKHX.argtypes = [ 
+        Device,
+        vkbuilder.Pointer(ImportSemaphoreWin32HandleInfoKHX),
+    ]
+
+try:
+    getSemaphoreFdKHX = lib.vkGetSemaphoreFdKHX
+except AttributeError as e: pass
+else:
+    getSemaphoreFdKHX.restype = ResultCheck
+    getSemaphoreFdKHX.argtypes = [ 
+        Device,
+        Semaphore,
+        ExternalSemaphoreHandleTypeFlagsKHX,
+        vkbuilder.Pointer(ctypes.c_int),
+    ]
+
+try:
+    importSemaphoreFdKHX = lib.vkImportSemaphoreFdKHX
+except AttributeError as e: pass
+else:
+    importSemaphoreFdKHX.restype = ResultCheck
+    importSemaphoreFdKHX.argtypes = [ 
+        Device,
+        vkbuilder.Pointer(ImportSemaphoreFdInfoKHX),
+    ]
+
+try:
+    releaseDisplayEXT = lib.vkReleaseDisplayEXT
+except AttributeError as e: pass
+else:
+    releaseDisplayEXT.restype = ResultCheck
+    releaseDisplayEXT.argtypes = [ 
+        PhysicalDevice,
+        DisplayKHR,
+    ]
+
+try:
+    acquireXlibDisplayEXT = lib.vkAcquireXlibDisplayEXT
+except AttributeError as e: pass
+else:
+    acquireXlibDisplayEXT.restype = ResultCheck
+    acquireXlibDisplayEXT.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(ctypes.c_void_p),
+        DisplayKHR,
+    ]
+
+try:
+    getRandROutputDisplayEXT = lib.vkGetRandROutputDisplayEXT
+except AttributeError as e: pass
+else:
+    getRandROutputDisplayEXT.restype = ResultCheck
+    getRandROutputDisplayEXT.argtypes = [ 
+        PhysicalDevice,
+        vkbuilder.Pointer(ctypes.c_void_p),
+        None,
+        vkbuilder.Pointer(DisplayKHR),
+    ]
+
+try:
+    displayPowerControlEXT = lib.vkDisplayPowerControlEXT
+except AttributeError as e: pass
+else:
+    displayPowerControlEXT.restype = ResultCheck
+    displayPowerControlEXT.argtypes = [ 
+        Device,
+        DisplayKHR,
+        vkbuilder.Pointer(DisplayPowerInfoEXT),
+    ]
+
+try:
+    registerDeviceEventEXT = lib.vkRegisterDeviceEventEXT
+except AttributeError as e: pass
+else:
+    registerDeviceEventEXT.restype = ResultCheck
+    registerDeviceEventEXT.argtypes = [ 
+        Device,
+        vkbuilder.Pointer(DeviceEventInfoEXT),
+        vkbuilder.Pointer(AllocationCallbacks),
+        vkbuilder.Pointer(Fence),
+    ]
+
+try:
+    registerDisplayEventEXT = lib.vkRegisterDisplayEventEXT
+except AttributeError as e: pass
+else:
+    registerDisplayEventEXT.restype = ResultCheck
+    registerDisplayEventEXT.argtypes = [ 
+        Device,
+        DisplayKHR,
+        vkbuilder.Pointer(DisplayEventInfoEXT),
+        vkbuilder.Pointer(AllocationCallbacks),
+        vkbuilder.Pointer(Fence),
+    ]
+
+try:
+    getSwapchainCounterEXT = lib.vkGetSwapchainCounterEXT
+except AttributeError as e: pass
+else:
+    getSwapchainCounterEXT.restype = ResultCheck
+    getSwapchainCounterEXT.argtypes = [ 
+        Device,
+        SwapchainKHR,
+        SurfaceCounterFlagsEXT,
+        vkbuilder.Pointer(ctypes.c_uint64),
+    ]
+
+try:
+    getPhysicalDeviceSurfaceCapabilities2EXT = lib.vkGetPhysicalDeviceSurfaceCapabilities2EXT
+except AttributeError as e: pass
+else:
+    getPhysicalDeviceSurfaceCapabilities2EXT.restype = ResultCheck
+    getPhysicalDeviceSurfaceCapabilities2EXT.argtypes = [ 
+        PhysicalDevice,
+        SurfaceKHR,
+        vkbuilder.Pointer(SurfaceCapabilities2EXT),
+    ]
+
+try:
+    enumeratePhysicalDeviceGroupsKHX = lib.vkEnumeratePhysicalDeviceGroupsKHX
+except AttributeError as e: pass
+else:
+    enumeratePhysicalDeviceGroupsKHX.restype = ResultCheck
+    enumeratePhysicalDeviceGroupsKHX.argtypes = [ 
+        Instance,
+        vkbuilder.Pointer(ctypes.c_uint32),
+        vkbuilder.Pointer(PhysicalDeviceGroupPropertiesKHX),
+    ]
+
+try:
+    getDeviceGroupPeerMemoryFeaturesKHX = lib.vkGetDeviceGroupPeerMemoryFeaturesKHX
+except AttributeError as e: pass
+else:
+    getDeviceGroupPeerMemoryFeaturesKHX.restype = None
+    getDeviceGroupPeerMemoryFeaturesKHX.argtypes = [ 
+        Device,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        vkbuilder.Pointer(PeerMemoryFeatureFlagsKHX),
+    ]
+
+try:
+    bindBufferMemory2KHX = lib.vkBindBufferMemory2KHX
+except AttributeError as e: pass
+else:
+    bindBufferMemory2KHX.restype = ResultCheck
+    bindBufferMemory2KHX.argtypes = [ 
+        Device,
+        ctypes.c_uint32,
+        vkbuilder.Pointer(BindBufferMemoryInfoKHX),
+    ]
+
+try:
+    bindImageMemory2KHX = lib.vkBindImageMemory2KHX
+except AttributeError as e: pass
+else:
+    bindImageMemory2KHX.restype = ResultCheck
+    bindImageMemory2KHX.argtypes = [ 
+        Device,
+        ctypes.c_uint32,
+        vkbuilder.Pointer(BindImageMemoryInfoKHX),
+    ]
+
+try:
+    cmdSetDeviceMaskKHX = lib.vkCmdSetDeviceMaskKHX
+except AttributeError as e: pass
+else:
+    cmdSetDeviceMaskKHX.restype = None
+    cmdSetDeviceMaskKHX.argtypes = [ 
+        CommandBuffer,
+        ctypes.c_uint32,
+    ]
+
+try:
+    getDeviceGroupPresentCapabilitiesKHX = lib.vkGetDeviceGroupPresentCapabilitiesKHX
+except AttributeError as e: pass
+else:
+    getDeviceGroupPresentCapabilitiesKHX.restype = ResultCheck
+    getDeviceGroupPresentCapabilitiesKHX.argtypes = [ 
+        Device,
+        vkbuilder.Pointer(DeviceGroupPresentCapabilitiesKHX),
+    ]
+
+try:
+    getDeviceGroupSurfacePresentModesKHX = lib.vkGetDeviceGroupSurfacePresentModesKHX
+except AttributeError as e: pass
+else:
+    getDeviceGroupSurfacePresentModesKHX.restype = ResultCheck
+    getDeviceGroupSurfacePresentModesKHX.argtypes = [ 
+        Device,
+        SurfaceKHR,
+        vkbuilder.Pointer(DeviceGroupPresentModeFlagsKHX),
+    ]
+
+try:
+    acquireNextImage2KHX = lib.vkAcquireNextImage2KHX
+except AttributeError as e: pass
+else:
+    acquireNextImage2KHX.restype = ResultCheck
+    acquireNextImage2KHX.argtypes = [ 
+        Device,
+        vkbuilder.Pointer(AcquireNextImageInfoKHX),
+        vkbuilder.Pointer(ctypes.c_uint32),
+    ]
+
+try:
+    cmdDispatchBaseKHX = lib.vkCmdDispatchBaseKHX
+except AttributeError as e: pass
+else:
+    cmdDispatchBaseKHX.restype = None
+    cmdDispatchBaseKHX.argtypes = [ 
+        CommandBuffer,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+    ]
+
+try:
+    getPhysicalDevicePresentRectanglesKHX = lib.vkGetPhysicalDevicePresentRectanglesKHX
+except AttributeError as e: pass
+else:
+    getPhysicalDevicePresentRectanglesKHX.restype = ResultCheck
+    getPhysicalDevicePresentRectanglesKHX.argtypes = [ 
+        PhysicalDevice,
+        SurfaceKHR,
+        vkbuilder.Pointer(ctypes.c_uint32),
+        vkbuilder.Pointer(Rect2D),
+    ]
+
+try:
+    createDescriptorUpdateTemplateKHR = lib.vkCreateDescriptorUpdateTemplateKHR
+except AttributeError as e: pass
+else:
+    createDescriptorUpdateTemplateKHR.restype = ResultCheck
+    createDescriptorUpdateTemplateKHR.argtypes = [ 
+        Device,
+        vkbuilder.Pointer(DescriptorUpdateTemplateCreateInfoKHR),
+        vkbuilder.Pointer(AllocationCallbacks),
+        vkbuilder.Pointer(DescriptorUpdateTemplateKHR),
+    ]
+
+try:
+    destroyDescriptorUpdateTemplateKHR = lib.vkDestroyDescriptorUpdateTemplateKHR
+except AttributeError as e: pass
+else:
+    destroyDescriptorUpdateTemplateKHR.restype = None
+    destroyDescriptorUpdateTemplateKHR.argtypes = [ 
+        Device,
+        DescriptorUpdateTemplateKHR,
+        vkbuilder.Pointer(AllocationCallbacks),
+    ]
+
+try:
+    updateDescriptorSetWithTemplateKHR = lib.vkUpdateDescriptorSetWithTemplateKHR
+except AttributeError as e: pass
+else:
+    updateDescriptorSetWithTemplateKHR.restype = None
+    updateDescriptorSetWithTemplateKHR.argtypes = [ 
+        Device,
+        DescriptorSet,
+        DescriptorUpdateTemplateKHR,
+        ctypes.c_void_p,
+    ]
+
+try:
+    cmdPushDescriptorSetWithTemplateKHR = lib.vkCmdPushDescriptorSetWithTemplateKHR
+except AttributeError as e: pass
+else:
+    cmdPushDescriptorSetWithTemplateKHR.restype = None
+    cmdPushDescriptorSetWithTemplateKHR.argtypes = [ 
+        CommandBuffer,
+        DescriptorUpdateTemplateKHR,
+        PipelineLayout,
+        ctypes.c_uint32,
+        ctypes.c_void_p,
+    ]
+
+try:
+    setHdrMetadataEXT = lib.vkSetHdrMetadataEXT
+except AttributeError as e: pass
+else:
+    setHdrMetadataEXT.restype = None
+    setHdrMetadataEXT.argtypes = [ 
+        Device,
+        ctypes.c_uint32,
+        vkbuilder.Pointer(SwapchainKHR),
+        vkbuilder.Pointer(HdrMetadataEXT),
+    ]
+
+try:
+    getRefreshCycleDurationGOOGLE = lib.vkGetRefreshCycleDurationGOOGLE
+except AttributeError as e: pass
+else:
+    getRefreshCycleDurationGOOGLE.restype = ResultCheck
+    getRefreshCycleDurationGOOGLE.argtypes = [ 
+        Device,
+        SwapchainKHR,
+        vkbuilder.Pointer(RefreshCycleDurationGOOGLE),
+    ]
+
+try:
+    getPastPresentationTimingGOOGLE = lib.vkGetPastPresentationTimingGOOGLE
+except AttributeError as e: pass
+else:
+    getPastPresentationTimingGOOGLE.restype = ResultCheck
+    getPastPresentationTimingGOOGLE.argtypes = [ 
+        Device,
+        SwapchainKHR,
+        vkbuilder.Pointer(ctypes.c_uint32),
+        vkbuilder.Pointer(PastPresentationTimingGOOGLE),
+    ]
+
+try:
+    createIOSSurfaceMVK = lib.vkCreateIOSSurfaceMVK
+except AttributeError as e: pass
+else:
+    createIOSSurfaceMVK.restype = ResultCheck
+    createIOSSurfaceMVK.argtypes = [ 
+        Instance,
+        vkbuilder.Pointer(IOSSurfaceCreateInfoMVK),
+        vkbuilder.Pointer(AllocationCallbacks),
+        vkbuilder.Pointer(SurfaceKHR),
+    ]
+
+try:
+    createMacOSSurfaceMVK = lib.vkCreateMacOSSurfaceMVK
+except AttributeError as e: pass
+else:
+    createMacOSSurfaceMVK.restype = ResultCheck
+    createMacOSSurfaceMVK.argtypes = [ 
+        Instance,
+        vkbuilder.Pointer(MacOSSurfaceCreateInfoMVK),
+        vkbuilder.Pointer(AllocationCallbacks),
+        vkbuilder.Pointer(SurfaceKHR),
+    ]
+
+try:
+    cmdSetViewportWScalingNV = lib.vkCmdSetViewportWScalingNV
+except AttributeError as e: pass
+else:
+    cmdSetViewportWScalingNV.restype = None
+    cmdSetViewportWScalingNV.argtypes = [ 
+        CommandBuffer,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        vkbuilder.Pointer(ViewportWScalingNV),
+    ]
+
+try:
+    cmdSetDiscardRectangleEXT = lib.vkCmdSetDiscardRectangleEXT
+except AttributeError as e: pass
+else:
+    cmdSetDiscardRectangleEXT.restype = None
+    cmdSetDiscardRectangleEXT.argtypes = [ 
+        CommandBuffer,
+        ctypes.c_uint32,
+        ctypes.c_uint32,
+        vkbuilder.Pointer(Rect2D),
     ]
