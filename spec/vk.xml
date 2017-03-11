@@ -144,7 +144,7 @@ maintained in the master branch of the Khronos Vulkan GitHub project.
         <type requires="vk_platform" name="uint64_t"/>
         <type requires="vk_platform" name="int32_t"/>
         <type requires="vk_platform" name="size_t"/>
-        <!-- type name="int"/ -->
+        <type name="int"/>
         <!-- Bitmask types -->
         <type                                             category="bitmask">typedef <type>VkFlags</type> <name>VkFramebufferCreateFlags</name>;</type>               <!-- creation flags -->
         <type                                             category="bitmask">typedef <type>VkFlags</type> <name>VkQueryPoolCreateFlags</name>;</type>                 <!-- creation flags -->

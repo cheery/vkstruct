@@ -1,1 +1,0 @@
-vkstruct.py

@@ -4162,6 +4162,59 @@
             ], 
             "type": "struct"
         }, 
+        "HdrMetadataEXT": {
+            "aliases": {}, 
+            "autoarrays": {}, 
+            "defaults": {
+                "sType": "HDR_METADATA_EXT"
+            }, 
+            "fields": [
+                [
+                    "sType", 
+                    "StructureType"
+                ], 
+                [
+                    "pNext", 
+                    {
+                        "to": "void", 
+                        "type": "pointer"
+                    }
+                ], 
+                [
+                    "displayPrimaryRed", 
+                    "XYColorEXT"
+                ], 
+                [
+                    "displayPrimaryGreen", 
+                    "XYColorEXT"
+                ], 
+                [
+                    "displayPrimaryBlue", 
+                    "XYColorEXT"
+                ], 
+                [
+                    "whitePoint", 
+                    "XYColorEXT"
+                ], 
+                [
+                    "maxLuminance", 
+                    "float"
+                ], 
+                [
+                    "minLuminance", 
+                    "float"
+                ], 
+                [
+                    "maxContentLightLevel", 
+                    "float"
+                ], 
+                [
+                    "maxFrameAverageLightLevel", 
+                    "float"
+                ]
+            ], 
+            "type": "struct"
+        }, 
         "IOSSurfaceCreateFlagsMVK": "i32", 
         "IOSSurfaceCreateInfoMVK": {
             "aliases": {
@@ -4399,31 +4452,6 @@
             "autoarrays": {}, 
             "defaults": {
                 "sType": "IMAGE_FORMAT_PROPERTIES_2KHR"
-            }, 
-            "fields": [
-                [
-                    "sType", 
-                    "StructureType"
-                ], 
-                [
-                    "pNext", 
-                    {
-                        "to": "void", 
-                        "type": "pointer"
-                    }
-                ], 
-                [
-                    "imageFormatProperties", 
-                    "ImageFormatProperties"
-                ]
-            ], 
-            "type": "struct"
-        }, 
-        "ImageFormatProperties2KHX": {
-            "aliases": {}, 
-            "autoarrays": {}, 
-            "defaults": {
-                "sType": "IMAGE_FORMAT_PROPERTIES_2KHX"
             }, 
             "fields": [
                 [
@@ -5848,6 +5876,34 @@
             "restype": "void", 
             "type": "cfunc"
         }, 
+        "PastPresentationTimingGOOGLE": {
+            "aliases": {}, 
+            "autoarrays": {}, 
+            "defaults": {}, 
+            "fields": [
+                [
+                    "presentID", 
+                    "u32"
+                ], 
+                [
+                    "desiredPresentTime", 
+                    "u64"
+                ], 
+                [
+                    "actualPresentTime", 
+                    "u64"
+                ], 
+                [
+                    "earliestPresentTime", 
+                    "u64"
+                ], 
+                [
+                    "presentMargin", 
+                    "u64"
+                ]
+            ], 
+            "type": "struct"
+        }, 
         "PeerMemoryFeatureFlagsKHX": {
             "constants": {
                 "COPY_DST_BIT_KHX": 2, 
@@ -6317,47 +6373,6 @@
             "autoarrays": {}, 
             "defaults": {
                 "sType": "PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2KHR"
-            }, 
-            "fields": [
-                [
-                    "sType", 
-                    "StructureType"
-                ], 
-                [
-                    "pNext", 
-                    {
-                        "to": "void", 
-                        "type": "pointer"
-                    }
-                ], 
-                [
-                    "format", 
-                    "Format"
-                ], 
-                [
-                    "type", 
-                    "ImageType"
-                ], 
-                [
-                    "tiling", 
-                    "ImageTiling"
-                ], 
-                [
-                    "usage", 
-                    "ImageUsageFlags"
-                ], 
-                [
-                    "flags", 
-                    "ImageCreateFlags"
-                ]
-            ], 
-            "type": "struct"
-        }, 
-        "PhysicalDeviceImageFormatInfo2KHX": {
-            "aliases": {}, 
-            "autoarrays": {}, 
-            "defaults": {
-                "sType": "PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2KHX"
             }, 
             "fields": [
                 [
@@ -7051,31 +7066,6 @@
             "autoarrays": {}, 
             "defaults": {
                 "sType": "PHYSICAL_DEVICE_PROPERTIES_2KHR"
-            }, 
-            "fields": [
-                [
-                    "sType", 
-                    "StructureType"
-                ], 
-                [
-                    "pNext", 
-                    {
-                        "to": "void", 
-                        "type": "pointer"
-                    }
-                ], 
-                [
-                    "properties", 
-                    "PhysicalDeviceProperties"
-                ]
-            ], 
-            "type": "struct"
-        }, 
-        "PhysicalDeviceProperties2KHX": {
-            "aliases": {}, 
-            "autoarrays": {}, 
-            "defaults": {
-                "sType": "PHYSICAL_DEVICE_PROPERTIES_2KHX"
             }, 
             "fields": [
                 [
@@ -8167,6 +8157,59 @@
             "ctype": "i32", 
             "type": "enum"
         }, 
+        "PresentTimeGOOGLE": {
+            "aliases": {}, 
+            "autoarrays": {}, 
+            "defaults": {}, 
+            "fields": [
+                [
+                    "presentID", 
+                    "u32"
+                ], 
+                [
+                    "desiredPresentTime", 
+                    "u64"
+                ]
+            ], 
+            "type": "struct"
+        }, 
+        "PresentTimesInfoGOOGLE": {
+            "aliases": {}, 
+            "autoarrays": {
+                "times": [
+                    "swapchainCount", 
+                    "pTimes"
+                ]
+            }, 
+            "defaults": {
+                "sType": "PRESENT_TIMES_INFO_GOOGLE"
+            }, 
+            "fields": [
+                [
+                    "sType", 
+                    "StructureType"
+                ], 
+                [
+                    "pNext", 
+                    {
+                        "to": "void", 
+                        "type": "pointer"
+                    }
+                ], 
+                [
+                    "swapchainCount", 
+                    "u32"
+                ], 
+                [
+                    "pTimes", 
+                    {
+                        "to": "PresentTimeGOOGLE", 
+                        "type": "pointer"
+                    }
+                ]
+            ], 
+            "type": "struct"
+        }, 
         "PrimitiveTopology": {
             "constants": {
                 "LINE_LIST": 1, 
@@ -8398,6 +8441,18 @@
             ], 
             "type": "struct"
         }, 
+        "RefreshCycleDurationGOOGLE": {
+            "aliases": {}, 
+            "autoarrays": {}, 
+            "defaults": {}, 
+            "fields": [
+                [
+                    "refreshDuration", 
+                    "u64"
+                ]
+            ], 
+            "type": "struct"
+        }, 
         "RenderPass": {
             "to": {
                 "name": "RenderPass", 
@@ -8616,38 +8671,6 @@
             }, 
             "ctype": "i32", 
             "type": "enum"
-        }, 
-        "SMPTE2086MetadataEXT": {
-            "aliases": {}, 
-            "autoarrays": {}, 
-            "defaults": {}, 
-            "fields": [
-                [
-                    "displayPrimaryRed", 
-                    "XYColorEXT"
-                ], 
-                [
-                    "displayPrimaryGreen", 
-                    "XYColorEXT"
-                ], 
-                [
-                    "displayPrimaryBlue", 
-                    "XYColorEXT"
-                ], 
-                [
-                    "whitePoint", 
-                    "XYColorEXT"
-                ], 
-                [
-                    "maxLuminance", 
-                    "float"
-                ], 
-                [
-                    "minLuminance", 
-                    "float"
-                ]
-            ], 
-            "type": "struct"
         }, 
         "SampleCountFlags": {
             "constants": {
@@ -13327,6 +13350,25 @@
                 "type": "cfunc"
             }
         }, 
+        "getPastPresentationTimingGOOGLE": {
+            "name": "vkGetPastPresentationTimingGOOGLE", 
+            "type": {
+                "argtypes": [
+                    "Device", 
+                    "SwapchainKHR", 
+                    {
+                        "to": "u32", 
+                        "type": "pointer"
+                    }, 
+                    {
+                        "to": "PastPresentationTimingGOOGLE", 
+                        "type": "pointer"
+                    }
+                ], 
+                "restype": "Result", 
+                "type": "cfunc"
+            }
+        }, 
         "getPhysicalDeviceDisplayPlanePropertiesKHR": {
             "name": "vkGetPhysicalDeviceDisplayPlanePropertiesKHR", 
             "type": {
@@ -13532,24 +13574,6 @@
                 "type": "cfunc"
             }
         }, 
-        "getPhysicalDeviceImageFormatProperties2KHX": {
-            "name": "vkGetPhysicalDeviceImageFormatProperties2KHX", 
-            "type": {
-                "argtypes": [
-                    "PhysicalDevice", 
-                    {
-                        "to": "PhysicalDeviceImageFormatInfo2KHX", 
-                        "type": "pointer"
-                    }, 
-                    {
-                        "to": "ImageFormatProperties2KHX", 
-                        "type": "pointer"
-                    }
-                ], 
-                "restype": "Result", 
-                "type": "cfunc"
-            }
-        }, 
         "getPhysicalDeviceMemoryProperties": {
             "name": "vkGetPhysicalDeviceMemoryProperties", 
             "type": {
@@ -13633,20 +13657,6 @@
                     "PhysicalDevice", 
                     {
                         "to": "PhysicalDeviceProperties2KHR", 
-                        "type": "pointer"
-                    }
-                ], 
-                "restype": "void", 
-                "type": "cfunc"
-            }
-        }, 
-        "getPhysicalDeviceProperties2KHX": {
-            "name": "vkGetPhysicalDeviceProperties2KHX", 
-            "type": {
-                "argtypes": [
-                    "PhysicalDevice", 
-                    {
-                        "to": "PhysicalDeviceProperties2KHX", 
                         "type": "pointer"
                     }
                 ], 
@@ -13928,6 +13938,21 @@
                     "void", 
                     {
                         "to": "DisplayKHR", 
+                        "type": "pointer"
+                    }
+                ], 
+                "restype": "Result", 
+                "type": "cfunc"
+            }
+        }, 
+        "getRefreshCycleDurationGOOGLE": {
+            "name": "vkGetRefreshCycleDurationGOOGLE", 
+            "type": {
+                "argtypes": [
+                    "Device", 
+                    "SwapchainKHR", 
+                    {
+                        "to": "RefreshCycleDurationGOOGLE", 
                         "type": "pointer"
                     }
                 ], 
@@ -14304,8 +14329,8 @@
                 "type": "cfunc"
             }
         }, 
-        "setSMPTE2086MetadataEXT": {
-            "name": "vkSetSMPTE2086MetadataEXT", 
+        "setHdrMetadataEXT": {
+            "name": "vkSetHdrMetadataEXT", 
             "type": {
                 "argtypes": [
                     "Device", 
@@ -14315,7 +14340,7 @@
                         "type": "pointer"
                     }, 
                     {
-                        "to": "SMPTE2086MetadataEXT", 
+                        "to": "HdrMetadataEXT", 
                         "type": "pointer"
                     }
                 ], 

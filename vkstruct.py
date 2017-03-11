@@ -80,6 +80,9 @@ def translate():
             if category == "union":
                 epilogues.append(translate_union(tag))
                 continue
+            if tag.get("name") == "int": # This may kick back if someone
+                continue                 # adds name="int" to some of the
+                                         # registry-types field.
             if "requires" in tag.attrs:
                 continue
             assert False, tag

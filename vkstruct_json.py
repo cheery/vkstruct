@@ -3,7 +3,7 @@ from bs4.element import Comment, NavigableString, Tag
 import json, re, os
 import vkparser
 
-vk_xml = "/archive/Documents/Vulkan-Docs/src/spec/vk.xml"
+vk_xml = "./spec/vk.xml"
 vk_json = "libvulkan.json"
 
 typemap = {
@@ -72,8 +72,9 @@ def translate():
             if category == "union":
                 translate_union(types, constants, tag)
                 continue
-            if tag.get("name") == "int":
-                continue
+            if tag.get("name") == "int": # This may kick back if someone
+                continue                 # adds name="int" to some of the
+                                         # registry-types field.
             if "requires" in tag.attrs:
                 continue
             assert False, tag

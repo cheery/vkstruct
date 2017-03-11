@@ -1,0 +1,6 @@
+# file: vkstruct_json.py, vkstruct.py
+
+The project hasn't changed much since the early days of its creation.
+Few changes were required to get the newer vulkan specs to translate.
+
+The first contribution by someone else happened today.
