@@ -205,7 +205,7 @@ def translate_command(variables, constants, tag):
             argtypes.append(writeout_type(constants, argtype))
 
 def translate_extension(types, constants, extension):
-    enum_base = 1000000000 + 1000 * int(extension["number"])
+    enum_base = 1000000000 + 1000 * (int(extension["number"]) - 1)
     for tag in extension.require:
         if tag.name is None:
             continue
