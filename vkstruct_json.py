@@ -84,6 +84,14 @@ def translate():
         if tag.name == "command":
             translate_command(variables, constants, tag)
 
+    for tag in registry.extensions:
+        if tag.name == "extension":
+            translate_extension(types, constants, tag)
+            continue
+        if tag.name is None:
+            continue
+        assert False, tag
+
     with open(vk_json, "w") as fd:
         json.dump(libvulkan, fd, sort_keys=True, indent=4)
 
@@ -195,6 +203,52 @@ def translate_command(variables, constants, tag):
         if param.name == "param":
             argtype, _ = vkparser.parse_member(param)
             argtypes.append(writeout_type(constants, argtype))
+
+def translate_extension(types, constants, extension):
+    enum_base = 1000000000 + 1000 * int(extension["number"])
+    for tag in extension.require:
+        if tag.name is None:
+            continue
+        if tag.name == "enum" and "value" in tag.attrs:
+            value = tag["value"]
+            if value in constants:
+                value = constants[value]
+            elif value.startswith('"') and value.endswith('"'):
+                value = value[1:-1]
+            elif value == "VK_COLOR_SPACE_SRGB_NONLINEAR_KHR":
+                value = types["ColorSpaceKHR"]["constants"]["SRGB_NONLINEAR_KHR"]
+            elif value == "VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT":
+                value = types["StructureType"]["constants"]["DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT"]
+            else:
+                value = int(value)
+            constants[tag["name"]] = value
+            continue
+        if tag.name == "enum" and "extends" in tag.attrs:
+            extends = rename_enumeration(tag["extends"])
+            prefix = "^VK_"
+            for cell in split_case(extends):
+                prefix += "(" + cell.upper() + "_)?"
+            name = re.sub(prefix, "", tag["name"])
+            if "offset" in tag.attrs:
+                if tag.get("dir") == "-":
+                    sign = -1
+                else:
+                    sign = +1
+                const = sign * (enum_base + int(tag["offset"]))
+            elif "bitpos" in tag.attrs:
+                const = 1 << int(tag["bitpos"])
+            else:
+                assert False, tag
+            types[extends]["constants"][name] = const
+            continue
+        if tag.name == "enum" and set(tag.attrs) == {"name"}:
+            continue
+        if tag.name == "command":
+            continue
+        if tag.name == "type":
+            continue
+        assert False, tag
+
 
 def split_case(name):
     for cell in re.split("([A-Z]+[a-z]+)", name):
