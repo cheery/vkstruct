@@ -3490,7 +3490,7 @@
             }, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "EXPORT_MEMORY_WIN_32_HANDLE_INFO_KHX"
+                "sType": "EXPORT_MEMORY_WIN32_HANDLE_INFO_KHX"
             }, 
             "fields": [
                 [
@@ -3528,7 +3528,7 @@
             }, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "EXPORT_MEMORY_WIN_32_HANDLE_INFO_NV"
+                "sType": "EXPORT_MEMORY_WIN32_HANDLE_INFO_NV"
             }, 
             "fields": [
                 [
@@ -3587,7 +3587,7 @@
             }, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "EXPORT_SEMAPHORE_WIN_32_HANDLE_INFO_KHX"
+                "sType": "EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHX"
             }, 
             "fields": [
                 [
@@ -4230,7 +4230,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "FORMAT_PROPERTIES_2KHR"
+                "sType": "FORMAT_PROPERTIES_2_KHR"
             }, 
             "fields": [
                 [
@@ -4518,7 +4518,7 @@
             }, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "IOSSURFACE_CREATE_INFO_MVK"
+                "sType": "IOS_SURFACE_CREATE_INFO_MVK"
             }, 
             "fields": [
                 [
@@ -4749,7 +4749,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "IMAGE_FORMAT_PROPERTIES_2KHR"
+                "sType": "IMAGE_FORMAT_PROPERTIES_2_KHR"
             }, 
             "fields": [
                 [
@@ -5094,7 +5094,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "IMPORT_MEMORY_WIN_32_HANDLE_INFO_KHX"
+                "sType": "IMPORT_MEMORY_WIN32_HANDLE_INFO_KHX"
             }, 
             "fields": [
                 [
@@ -5123,7 +5123,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "IMPORT_MEMORY_WIN_32_HANDLE_INFO_NV"
+                "sType": "IMPORT_MEMORY_WIN32_HANDLE_INFO_NV"
             }, 
             "fields": [
                 [
@@ -5185,7 +5185,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "IMPORT_SEMAPHORE_WIN_32_HANDLE_INFO_KHX"
+                "sType": "IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHX"
             }, 
             "fields": [
                 [
@@ -5489,7 +5489,7 @@
             }, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "MAC_OSSURFACE_CREATE_INFO_MVK"
+                "sType": "MACOS_SURFACE_CREATE_INFO_MVK"
             }, 
             "fields": [
                 [
@@ -5745,7 +5745,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "MEMORY_WIN_32_HANDLE_PROPERTIES_KHX"
+                "sType": "MEMORY_WIN32_HANDLE_PROPERTIES_KHX"
             }, 
             "fields": [
                 [
@@ -6561,7 +6561,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "PHYSICAL_DEVICE_FEATURES_2KHR"
+                "sType": "PHYSICAL_DEVICE_FEATURES_2_KHR"
             }, 
             "fields": [
                 [
@@ -6623,7 +6623,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "PHYSICAL_DEVICE_IDPROPERTIES_KHX"
+                "sType": "PHYSICAL_DEVICE_ID_PROPERTIES_KHX"
             }, 
             "fields": [
                 [
@@ -6672,7 +6672,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2KHR"
+                "sType": "PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2_KHR"
             }, 
             "fields": [
                 [
@@ -7201,7 +7201,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "PHYSICAL_DEVICE_MEMORY_PROPERTIES_2KHR"
+                "sType": "PHYSICAL_DEVICE_MEMORY_PROPERTIES_2_KHR"
             }, 
             "fields": [
                 [
@@ -7365,7 +7365,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "PHYSICAL_DEVICE_PROPERTIES_2KHR"
+                "sType": "PHYSICAL_DEVICE_PROPERTIES_2_KHR"
             }, 
             "fields": [
                 [
@@ -7415,7 +7415,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2KHR"
+                "sType": "PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2_KHR"
             }, 
             "fields": [
                 [
@@ -8335,7 +8335,7 @@
                 ]
             }, 
             "defaults": {
-                "sType": "PIPELINE_VIEWPORT_WSCALING_STATE_CREATE_INFO_NV"
+                "sType": "PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV"
             }, 
             "fields": [
                 [
@@ -8673,7 +8673,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "QUEUE_FAMILY_PROPERTIES_2KHR"
+                "sType": "QUEUE_FAMILY_PROPERTIES_2_KHR"
             }, 
             "fields": [
                 [
@@ -9271,7 +9271,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "SPARSE_IMAGE_FORMAT_PROPERTIES_2KHR"
+                "sType": "SPARSE_IMAGE_FORMAT_PROPERTIES_2_KHR"
             }, 
             "fields": [
                 [
@@ -9959,7 +9959,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "SURFACE_CAPABILITIES_2EXT"
+                "sType": "SURFACE_CAPABILITIES2_EXT"
             }, 
             "fields": [
                 [
@@ -10536,7 +10536,7 @@
                 ]
             }, 
             "defaults": {
-                "sType": "WIN_32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHX"
+                "sType": "WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHX"
             }, 
             "fields": [
                 [
@@ -10621,7 +10621,7 @@
                 ]
             }, 
             "defaults": {
-                "sType": "WIN_32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV"
+                "sType": "WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV"
             }, 
             "fields": [
                 [
@@ -10686,7 +10686,7 @@
             "aliases": {}, 
             "autoarrays": {}, 
             "defaults": {
-                "sType": "WIN_32_SURFACE_CREATE_INFO_KHR"
+                "sType": "WIN32_SURFACE_CREATE_INFO_KHR"
             }, 
             "fields": [
                 [

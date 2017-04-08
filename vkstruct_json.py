@@ -161,7 +161,7 @@ def translate_struct(types, constants, struct):
     this["autoarrays"] = autoarrays = {}
     this["aliases"] = aliases = {}
     this["defaults"] = defaults = {}
-    has_sType = False
+    #has_sType = False
     for tag in struct:
         if tag.name == "member":
             tp, name_ = vkparser.parse_member(tag)
@@ -174,9 +174,11 @@ def translate_struct(types, constants, struct):
                 assert re.match("^p+[A-Z]", name_), name_
                 alias = re.sub('^p+([A-Z])', lambda m: m.group(1).lower(), name_)
                 aliases[alias] = name_
-            has_sType = has_sType or name_ == "sType"
-    if has_sType:
-        defaults["sType"] = "_".join(x.upper() for x in split_case(name))
+            if name_ == "sType":
+                if "values" in tag.attrs:
+                    defaults["sType"] = re.sub("^VK_STRUCTURE_TYPE_", "", tag["values"])
+                else:
+                    defaults["sType"] = "_".join(x.upper() for x in split_case(name))
 
 def translate_union(types, constants, struct):
     name = struct["name"]
@@ -251,7 +253,7 @@ def translate_extension(types, constants, extension):
 
 
 def split_case(name):
-    for cell in re.split("([A-Z]+[a-z]+)", name):
+    for cell in re.split("([A-Z0-9]+[a-z0-9]+)", name):
         if cell != "":
             yield cell
 
