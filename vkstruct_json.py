@@ -178,7 +178,8 @@ def translate_struct(types, constants, struct):
                 if "values" in tag.attrs:
                     defaults["sType"] = re.sub("^VK_STRUCTURE_TYPE_", "", tag["values"])
                 else:
-                    defaults["sType"] = "_".join(x.upper() for x in split_case(name))
+                    assert False, (name, "no value")
+                    #defaults["sType"] = "_".join(x.upper() for x in split_case(name))
 
 def translate_union(types, constants, struct):
     name = struct["name"]
