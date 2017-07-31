@@ -141,7 +141,12 @@ def rename_enumeration(name):
 def translate_handle(types, tag):
     name = tag.find("name").text
     name = re.subn("^Vk", "", name)[0]
-    types[name] = {"type":"pointer", "to":{"type":"opaque", "name":name}}
+    if tag.type.text == u"VK_DEFINE_HANDLE":
+        types[name] = {"type":"vulkan_handle", "dispatchable": True}
+    elif tag.type.text == u"VK_DEFINE_NON_DISPATCHABLE_HANDLE":
+        types[name] = {"type":"vulkan_handle", "dispatchable": False}
+    else:
+        assert False, "No translation for {!r} with <type> {!r}".format(name, tag.type.text)
 
 def translate_funcpointer(types, constants, funcpointer):
     restype, name, args = vkparser.parse_funcpointer(funcpointer)
@@ -222,6 +227,8 @@ def translate_extension(types, constants, extension):
                 value = types["ColorSpaceKHR"]["constants"]["SRGB_NONLINEAR_KHR"]
             elif value == "VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT":
                 value = types["StructureType"]["constants"]["DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT"]
+            elif value == "VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_CALLBACK_EXT_EXT":
+                value = types["DebugReportObjectTypeEXT"]["constants"]["DEBUG_REPORT_CALLBACK_EXT_EXT"]
             else:
                 value = int(value)
             constants[tag["name"]] = value

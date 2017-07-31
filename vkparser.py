@@ -11,7 +11,9 @@ def parse(pg, tokens, root):
     parser = pg()
     for is_tag, token in tokens:
         if is_tag:
-            name = tagtypes[token.name]
+            if token.name == "comment": # These do not likely appear in
+                continue                # entirely random locations, but we
+            name = tagtypes[token.name] # do not need them either.
         else:
             name = token
             if name not in parser.expect:
